@@ -8,7 +8,4 @@ import (
 func main() {
 	beego.Run()
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> f0fba71b35ec1e3de386b665cd680ce91fdffef4
