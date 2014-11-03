@@ -1,5 +1,5 @@
 package controllers
 
 const (
-	PASSWDTOKEN string = "somi_admin_passwd_token"
+	PASSWD_TOKEN string = "somi_admin_passwd_token"
 )

@@ -44,7 +44,7 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <span id="resError" class="error">234234</span>
+        <span id="resError" class="error">&nbsp;</span>
         <button class="btn btn-lg btn-primary btn-block" id="loginSubmit" type="button">Sign in</button>
       </form>
 
@@ -64,9 +64,9 @@
 <script type="text/javascript">
 $(function(){
   $(".form-signin").on("click", "#loginSubmit", function(){
-    var uname = $("#uname").val();
-    var paswd = $("#passwd").val();
-    if (!uname || !passwd) {
+    var username = $("#uname").val();
+    var password = $("#passwd").val();
+    if (!username || !password) {
       alert("You must input the email and passwd!");
       return false;
     }
@@ -74,16 +74,20 @@ $(function(){
     $.ajax({
       type: "POST",
       url: "/admin/login",
-      data: {uname:uname, passwd:passwd},
+      data: {uname:username, passwd:password},
       dataType: "json",
       cache: false,
       timeout: 5000,
-      success: function(data){
-          if(data.succ){
-            $('#resError').empty();
-          }else{
-            $('#resError').html(data.msg);
-          }
+      success:function(data){
+        if(data.succ){
+          $('#resError').html("&nbsp;");
+          location.href = "/";
+        }else{
+          $('#resError').html(data.msg);
+        }
+      },
+      error:function(){
+        $('#resError').html("网络连接超时");
       }
     });
   });

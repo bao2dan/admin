@@ -17,6 +17,7 @@ var (
 	EMAILREG string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$`
 )
 
+//login system
 func (this *AdminController) Login() {
 	if !this.IsAjax() {
 		this.TplNames = "admin/login.tpl"
@@ -25,7 +26,7 @@ func (this *AdminController) Login() {
 	}
 
 	//result map
-	result := map[string]string{"succ": "0", "msg": ""}
+	result := map[string]interface{}{"succ": 0, "msg": ""}
 
 	//get params
 	uname := this.GetString("uname")
@@ -38,10 +39,10 @@ func (this *AdminController) Login() {
 		this.ServeJson()
 		return
 	}
-	
+
 	//md5 encode
 	h := md5.New()
-	h.Write([]byte(passwd + PASSWDTOKEN))
+	h.Write([]byte(passwd + PASSWD_TOKEN))
 	passwd = hex.EncodeToString(h.Sum(nil))
 
 	//get config for collection
@@ -74,17 +75,20 @@ func (this *AdminController) Login() {
 		return
 	}
 
+	//set session and return
 	if getuname, ok := info["uname"]; ok && "" != getuname {
 		this.SetSession("uname", uname)
-		result["succ"] = "1"
+		result["succ"] = 1
 		result["msg"] = "login success"
 	}
 	this.Data["json"] = result
 	this.ServeJson()
 }
 
+//logout system
 func (this *AdminController) Logout() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	this.DelSession("uname")
+	this.Redirect("/admin/login", 302)
 }
 
 func (this *AdminController) Register() {

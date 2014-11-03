@@ -12,7 +12,7 @@ func (this *IndexController) Index() {
 	uname := this.GetSession("uname")
 
 	if nil == uname {
-		this.Ctx.Redirect(302, "/admin/login")
+		this.Redirect("/admin/login", 302)
 	}
 
 	this.Data["Version"] = "1.0"
