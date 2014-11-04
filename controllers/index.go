@@ -11,7 +11,7 @@ type IndexController struct {
 func (this *IndexController) Index() {
 	uname := this.GetSession("uname")
 
-	if nil == uname {
+	if nil == uname || "" == uname {
 		this.Redirect("/admin/login", 302)
 	}
 

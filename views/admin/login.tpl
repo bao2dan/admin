@@ -27,7 +27,10 @@
     <![endif]-->
 
     <style>
-    .error{color: #f00;}
+    .error{
+      color: #f00; 
+      margin-bottom: 5px;
+    }
     </style>
   </head>
 
@@ -36,7 +39,7 @@
     <div class="container">
 
       <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
+        <h2 class="form-signin-heading">SOMI管理系统</h2>
         <input type="email" class="form-control" id="uname" placeholder="Email address" required autofocus>
         <input type="password" class="form-control" id="passwd" placeholder="Password" required>
         <div class="checkbox">
@@ -44,8 +47,8 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <span id="resError" class="error">&nbsp;</span>
-        <button class="btn btn-lg btn-primary btn-block" id="loginSubmit" type="button">Sign in</button>
+        <div id="resError" class="error">&nbsp;</div>
+        <button class="btn btn-lg btn-primary btn-block" id="loginSubmit" type="button">登陆</button>
       </form>
 
     </div> <!-- /container -->
@@ -54,7 +57,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/js/base/jquery.min.js"></script>
     <script src="/static/js/base/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/static/js/base/ie10-viewport-bug-workaround.js"></script>
@@ -64,12 +67,24 @@
 <script type="text/javascript">
 $(function(){
   $(".form-signin").on("click", "#loginSubmit", function(){
+    var _this = this;
     var username = $("#uname").val();
     var password = $("#passwd").val();
     if (!username || !password) {
-      alert("You must input the email and passwd!");
+      $('#resError').html("请输入用户名和密码");
       return false;
     }
+    var passwdReg = /^[A-Za-z0-9_]+$/
+    if(!passwdReg.test(password)){
+      $('#resError').html("密码只能使用字母、数字、下划线");
+      return false;
+    }
+    if (password.length < 8){
+      $('#resError').html("密码长度至少8位");
+      return false;
+    }
+
+    $(_this).addClass("disabled");
 
     $.ajax({
       type: "POST",
@@ -84,10 +99,12 @@ $(function(){
           location.href = "/";
         }else{
           $('#resError').html(data.msg);
+          $(_this).removeClass("disabled");
         }
       },
       error:function(){
         $('#resError').html("网络连接超时");
+        $(_this).removeClass("disabled");
       }
     });
   });
