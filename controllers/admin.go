@@ -19,7 +19,7 @@ var (
 	PASSWDREG string = `^[A-Za-z0-9_]+$`
 )
 
-//login system
+//登陆
 func (this *AdminController) Login() {
 	if !this.IsAjax() {
 		uname := this.GetSession("uname")
@@ -74,7 +74,7 @@ func (this *AdminController) Login() {
 	this.ServeJson()
 }
 
-//登陆
+//退出
 func (this *AdminController) Logout() {
 	this.DelSession("uname")
 	this.Redirect("/admin/login", 302)
