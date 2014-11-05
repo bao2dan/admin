@@ -25,13 +25,6 @@
       <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <style>
-    .error{
-      color: #f00; 
-      margin-bottom: 5px;
-    }
-    </style>
   </head>
 
   <body>
@@ -42,7 +35,7 @@
         <h2 class="form-register-heading">SOMI管理系统</h2>
         <input type="email" class="form-control" id="uname" placeholder="Email address" required autofocus>
         <input type="password" class="form-control" id="passwd" placeholder="Password" required>
-        <div id="resError" class="error">&nbsp;</div>
+        <div id="resError" class="error"></div>
         <button class="btn btn-lg btn-primary btn-block" id="registerSubmit" type="button">注册</button>
       </form>
 
@@ -90,7 +83,7 @@ $(function(){
       timeout: 5000,
       success:function(data){
         if(data.succ){
-          $('#resError').html("注册成功，正在跳转到登陆页面");
+          $('#resError').html("注册成功，请去邮箱激活此账号");
           //location.href = "/";
         }else{
           $('#resError').html(data.msg);

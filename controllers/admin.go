@@ -4,20 +4,15 @@ import (
 	"github.com/astaxie/beego"
 
 	"admin/models"
-	"crypto/md5"
-	"encoding/hex"
+
 	"errors"
 	"regexp"
+	"time"
 )
 
 type AdminController struct {
 	beego.Controller
 }
-
-var (
-	EMAILREG  string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$`
-	PASSWDREG string = `^[A-Za-z0-9_]+$`
-)
 
 //登陆
 func (this *AdminController) Login() {
@@ -34,7 +29,7 @@ func (this *AdminController) Login() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
-	//get params
+	//获取参数并校验
 	p, err := this.getParams()
 	if nil != err {
 		result["msg"] = err.Error()
@@ -43,7 +38,7 @@ func (this *AdminController) Login() {
 		return
 	}
 
-	//connect mongo db
+	//连接mongodb
 	db, err := models.ConnectMgo(p["mgourl"])
 	if nil != err {
 		result["msg"] = err.Error()
@@ -53,8 +48,8 @@ func (this *AdminController) Login() {
 	}
 	defer db.Session.Close()
 
-	//get admin info
-	info, err := models.GetAdminInfo(db, p["collection"], p["uname"], p["passwd"], "0")
+	//获取管理员信息
+	info, err := models.LoginGetAdminInfo(db, p["collection"], p["uname"], p["passwd"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -62,9 +57,13 @@ func (this *AdminController) Login() {
 		return
 	}
 
-	//set session and return
+	//当前时间
+	nowTime := time.Now().Format("2006-01-02 15:04:05")
+
+	//设置session并返回
 	if getuname, ok := info["uname"]; ok && "" != getuname {
 		this.SetSession("uname", p["uname"])
+		models.SetAdminLoginTime(db, p["collection"], p["uname"], nowTime)
 		result["succ"] = 1
 		result["msg"] = "登陆成功"
 	} else {
@@ -100,7 +99,7 @@ func (this *AdminController) Register() {
 		return
 	}
 
-	//connect mongo db
+	//连接mongodb
 	db, err := models.ConnectMgo(p["mgourl"])
 	if nil != err {
 		result["msg"] = err.Error()
@@ -110,8 +109,8 @@ func (this *AdminController) Register() {
 	}
 	defer db.Session.Close()
 
-	//判断是否已经存在该用户名
-	info, err := models.GetAdminInfo(db, p["collection"], p["uname"], p["passwd"], "0")
+	//判断是否已经存在该账号
+	info, err := models.GetAdminInfo(db, p["collection"], p["uname"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -119,32 +118,109 @@ func (this *AdminController) Register() {
 		return
 	}
 	if getuname, ok := info["uname"]; ok && "" != getuname {
-		result["msg"] = errors.New("该用户名已经存在")
+		result["msg"] = "该账号已经存在"
 		this.Data["json"] = result
 		this.ServeJson()
 		return
 	}
 
-	//取用户名+安全码的md5作为token(激活时要验证它)
-	h := md5.New()
-	h.Write([]byte(p["uname"] + UNAME_SECURITY))
-	token := hex.EncodeToString(h.Sum(nil))
+	//取账号+安全码的md5作为token(激活时要验证它)
+	token := md5Encode(p["uname"] + UNAME_SECURITY)
+
+	//当前时间
+	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//保存注册信息
-	err = models.InsertAdminInfo(db, p["collection"], p["uname"], p["passwd"], token)
+	err = models.InsertAdminInfo(db, p["collection"], p["uname"], p["passwd"], token, nowTime)
 	if nil == err {
+		//发送激活邮件
+		this.sendActivateMail(p["uname"], p["uname"], token)
 		result["succ"] = 1
 		result["msg"] = "注册成功"
 	} else {
-		result["msg"] = "注册失败或该用户名已存在"
+		result["msg"] = "注册失败或该账号已存在"
 	}
 	this.Data["json"] = result
 	this.ServeJson()
 }
 
+//激活
+func (this *AdminController) Activate() {
+	//获取相关参数
+	gettoken := this.GetString("token")
+	uname := this.GetString("uname")
+	if "" == gettoken || "" == uname {
+		this.Ctx.WriteString("参数有误")
+		return
+	}
+
+	//取账号+安全码的md5作为token(激活链接上带有它)
+	token := md5Encode(uname + UNAME_SECURITY)
+	if gettoken != token {
+		this.Ctx.WriteString("参数有误")
+		return
+	}
+
+	//获取mongo配置
+	collection := beego.AppConfig.String("table_admin_user")
+	mgourl_ir, _ := beego.GetConfig("string", "mgourlsomi")
+	mgourl, _ := mgourl_ir.(string)
+	if "" == mgourl {
+		this.Ctx.WriteString("Config mgourl is not exists")
+		return
+	}
+
+	//连接mongodb
+	db, err := models.ConnectMgo(mgourl)
+	if nil != err {
+		this.Ctx.WriteString("激活失败：" + err.Error())
+		return
+	}
+	defer db.Session.Close()
+
+	//判断是否存在未激活的账号
+	info, err := models.GetNotActivateAdmin(db, collection, uname)
+	if nil != err {
+		this.Ctx.WriteString("激活失败：" + err.Error())
+		return
+	}
+	if getuname, ok := info["uname"]; !ok || "" == getuname {
+		this.Ctx.WriteString("激活失败：该账号已经激活或不存在")
+		return
+	}
+
+	//当前时间
+	nowTime := time.Now().Format("2006-01-02 15:04:05")
+
+	//激活管理员
+	err = models.UnlockAdmin(db, collection, uname, nowTime)
+	if nil == err {
+		this.Redirect("/admin/login", 302)
+		return
+	} else {
+		this.Ctx.WriteString("激活失败：" + err.Error())
+		return
+	}
+}
+
+//发送账号激活邮件
+func (this *AdminController) sendActivateMail(uname, mailto, token string) (err error) {
+	activateUrl := "http://" + this.Ctx.Request.Host + "/admin/activate?token=" + token + "&uname=" + uname
+	subject := "SOMI管理员账号激活邮件"
+	body := "<style type='text/css'>div.emailrow{color:#FF5511;line-height:40px;padding-left:36px;}</style>"
+	body += "<h3 style='color:#FF5511;'>尊敬的用户：</h3>"
+	body += "<div class='emailrow'>您好！</div>"
+	body += "<div class='emailrow'>恭喜您即将成为 SOMI 网的管理员；</div>"
+	body += "<div class='emailrow'>请牢记账号，并严格履行管理员的职责；</div>"
+	body += "<div class='emailrow'>点击此链接 <a href='" + activateUrl + "' target='_blank'>激活</a> 您的账号（" + uname + "）；</div>"
+	body += "<div class='emailrow'>（系统发送，请务回复）</div>"
+	err = sendEmail(mailto, subject, body, true)
+	return err
+}
+
 //获取管理员登陆或注册公共方法
 func (this *AdminController) getParams() (p map[string]string, err error) {
-	//get params
+	//获取并校验参数
 	uname := this.GetString("uname")
 	passwd := this.GetString("passwd")
 	regEmail := regexp.MustCompile(EMAILREG)
@@ -152,7 +228,7 @@ func (this *AdminController) getParams() (p map[string]string, err error) {
 	regPasswd := regexp.MustCompile(PASSWDREG)
 	isPasswd := regPasswd.MatchString(passwd)
 	if "" == uname || !isEmail || "" == passwd {
-		err = errors.New("用户名或密码错误")
+		err = errors.New("账号或密码错误")
 		return p, err
 	}
 	if !isPasswd {
@@ -164,12 +240,10 @@ func (this *AdminController) getParams() (p map[string]string, err error) {
 		return p, err
 	}
 
-	//md5 encode
-	h := md5.New()
-	h.Write([]byte(passwd + PASSWD_SECURITY))
-	passwd = hex.EncodeToString(h.Sum(nil))
+	//md5 加密
+	passwd = md5Encode(passwd + PASSWD_SECURITY)
 
-	//get config for collection
+	//获取mongo配置
 	collection := beego.AppConfig.String("table_admin_user")
 	mgourl_ir, _ := beego.GetConfig("string", "mgourlsomi")
 	mgourl, _ := mgourl_ir.(string)

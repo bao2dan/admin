@@ -25,13 +25,6 @@
       <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <style>
-    .error{
-      color: #f00; 
-      margin-bottom: 5px;
-    }
-    </style>
   </head>
 
   <body>
@@ -47,7 +40,7 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <div id="resError" class="error">&nbsp;</div>
+        <div id="resError" class="error"></div>
         <button class="btn btn-lg btn-primary btn-block" id="loginSubmit" type="button">登陆</button>
       </form>
 
@@ -95,7 +88,7 @@ $(function(){
       timeout: 5000,
       success:function(data){
         if(data.succ){
-          $('#resError').html("&nbsp;");
+          $('#resError').html("");
           location.href = "/";
         }else{
           $('#resError').html(data.msg);

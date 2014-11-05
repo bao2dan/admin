@@ -34,3 +34,8 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+.form-register .error{
+  color: #f00; 
+  margin-bottom: 5px;
+  height:20px;
+}

@@ -13,6 +13,7 @@ func init() {
 	beego.Router("/admin/login", &controllers.AdminController{}, "*:Login")
 	beego.Router("/admin/logout", &controllers.AdminController{}, "*:Logout")
 	beego.Router("/admin/register", &controllers.AdminController{}, "*:Register")
+	beego.Router("/admin/activate", &controllers.AdminController{}, "get:Activate")
 	beego.Router("/admin/getpwd", &controllers.AdminController{}, "*:Getpwd")
 	beego.Router("/admin/list", &controllers.AdminController{}, "*:List")
 	beego.Router("/admin/view", &controllers.AdminController{}, "*:View")
