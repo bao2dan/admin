@@ -9,12 +9,14 @@ func init() {
 	//defult
 	beego.Router("/", &controllers.IndexController{}, "*:Index")
 
+	//site
+	beego.Router("/site/login", &controllers.SiteController{}, "*:Login")
+	beego.Router("/site/logout", &controllers.SiteController{}, "*:Logout")
+	beego.Router("/site/register", &controllers.SiteController{}, "*:Register")
+	beego.Router("/site/activate", &controllers.SiteController{}, "get:Activate")
+
 	//admin
-	beego.Router("/admin/login", &controllers.AdminController{}, "*:Login")
-	beego.Router("/admin/logout", &controllers.AdminController{}, "*:Logout")
-	beego.Router("/admin/register", &controllers.AdminController{}, "*:Register")
-	beego.Router("/admin/activate", &controllers.AdminController{}, "get:Activate")
-	beego.Router("/admin/getpwd", &controllers.AdminController{}, "*:Getpwd")
+	beego.Router("/admin/resetpasswd", &controllers.AdminController{}, "*:ResetPasswd")
 	beego.Router("/admin/list", &controllers.AdminController{}, "*:List")
 	beego.Router("/admin/view", &controllers.AdminController{}, "*:View")
 	beego.Router("/admin/lock", &controllers.AdminController{}, "*:Lock")

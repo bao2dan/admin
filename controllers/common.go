@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	UNAME_SECURITY  string = "somi_admin_uname_token"  //用户名安全码，用户注册激活等场景使用
-	PASSWD_SECURITY string = "somi_admin_passwd_token" //密码安全码，密码加密入库
-	EMAILREG        string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$`
-	PASSWDREG       string = `^[A-Za-z0-9_]+$`
+	ACCOUNT_SECURITY string = "somi_admin_account_token" //账号安全码，用户注册激活等场景使用
+	PASSWD_SECURITY  string = "somi_admin_passwd_token"  //密码安全码，密码加密入库
+	EMAILREG         string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$`
+	PASSWDREG        string = `^[A-Za-z0-9_]+$`
 )
 
 //发送邮件
@@ -56,10 +56,22 @@ func sendEmail(mailto, subject, body string, isHtml bool) (err error) {
 }
 
 //md5加密
-//s string 要加密的字符串
+//param s string 要加密的字符串
 func md5Encode(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
 	s = hex.EncodeToString(h.Sum(nil))
 	return s
+}
+
+//判断是否是超级管理员
+//param account string 账号
+func IsRoot(account string) (isRoot bool) {
+	var controller *beego.Controller
+	role := controller.GetSession("role")
+	isRoot = false
+	if "root" == role {
+		isRoot = true
+	}
+	return isRoot
 }
