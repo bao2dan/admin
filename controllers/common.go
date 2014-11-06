@@ -42,6 +42,7 @@ func sendEmail(mailto, subject, body string, isHtml bool) (err error) {
 		return err
 	}
 
+	mail.From = myMail
 	mail.To = []string{mailto}
 	mail.Subject = subject
 	if isHtml {

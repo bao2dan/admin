@@ -7,6 +7,7 @@ import (
 
 	"errors"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -61,8 +62,9 @@ func (this *AdminController) Login() {
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//设置session并返回
-	if getuname, ok := info["uname"]; ok && "" != getuname {
+	if role, ok := info["role"]; ok && "" != role {
 		this.SetSession("uname", p["uname"])
+		this.SetSession("role", role)
 		models.SetAdminLoginTime(db, p["collection"], p["uname"], nowTime)
 		result["succ"] = 1
 		result["msg"] = "登陆成功"
@@ -124,8 +126,11 @@ func (this *AdminController) Register() {
 		return
 	}
 
-	//取账号+安全码的md5作为token(激活时要验证它)
-	token := md5Encode(p["uname"] + UNAME_SECURITY)
+	//取账号+安全码+当天0点时间戳 的md5作为token(激活时要验证它)
+	year, month, day := time.Now().Date()
+	dayTime := time.Date(year, month, day, 0, 0, 0, 0, time.Local).Unix()
+	dayTimeStr := strconv.FormatInt(dayTime, 10)
+	token := md5Encode(p["uname"] + UNAME_SECURITY + dayTimeStr)
 
 	//当前时间
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
@@ -154,8 +159,11 @@ func (this *AdminController) Activate() {
 		return
 	}
 
-	//取账号+安全码的md5作为token(激活链接上带有它)
-	token := md5Encode(uname + UNAME_SECURITY)
+	//取账号+安全码+当天0点时间戳 的md5作为token(激活链接上带有它)
+	year, month, day := time.Now().Date()
+	dayTime := time.Date(year, month, day, 0, 0, 0, 0, time.Local).Unix()
+	dayTimeStr := strconv.FormatInt(dayTime, 10)
+	token := md5Encode(uname + UNAME_SECURITY + dayTimeStr)
 	if gettoken != token {
 		this.Ctx.WriteString("参数有误")
 		return
@@ -212,7 +220,7 @@ func (this *AdminController) sendActivateMail(uname, mailto, token string) (err 
 	body += "<div class='emailrow'>您好！</div>"
 	body += "<div class='emailrow'>恭喜您即将成为 SOMI 网的管理员；</div>"
 	body += "<div class='emailrow'>请牢记账号，并严格履行管理员的职责；</div>"
-	body += "<div class='emailrow'>点击此链接 <a href='" + activateUrl + "' target='_blank'>激活</a> 您的账号（" + uname + "）；</div>"
+	body += "<div class='emailrow'>点击此链接 <a href='" + activateUrl + "' target='_blank'>激活</a> 您的账号 " + uname + "（当天有效）；</div>"
 	body += "<div class='emailrow'>（系统发送，请务回复）</div>"
 	err = sendEmail(mailto, subject, body, true)
 	return err
