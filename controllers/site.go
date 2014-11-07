@@ -6,7 +6,6 @@ import (
 	"admin/models"
 
 	"errors"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -36,17 +35,17 @@ func (this *SiteController) Login() {
 	}
 
 	//连接mongodb
-	db, err := models.ConnectMgo(p["mgourl"])
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
 		this.ServeJson()
 		return
 	}
-	defer db.Session.Close()
+	defer models.MgoCon.Close()
 
 	//获取账号信息
-	info, err := models.LoginGetAdminInfo(db, p["collection"], p["account"], p["passwd"])
+	info, err := models.LoginGetAdminInfo(p["account"], p["passwd"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -55,13 +54,13 @@ func (this *SiteController) Login() {
 	}
 
 	//当前时间
-	nowTime := time.Now().Format("2006-01-02 15:04:05")
+	//nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//设置session并返回
 	if role, ok := info["role"]; ok && "" != role {
 		this.SetSession("account", p["account"])
 		this.SetSession("role", role)
-		models.SetAdminLoginTime(db, p["collection"], p["account"], nowTime)
+		//models.SetAdminLoginTime(mgoCon, p["account"], nowTime)
 		result["succ"] = 1
 		result["msg"] = "登陆成功"
 	} else {
@@ -98,17 +97,17 @@ func (this *SiteController) Register() {
 	}
 
 	//连接mongodb
-	db, err := models.ConnectMgo(p["mgourl"])
+	mgoCon, err := models.ConnectMgo(MGO_CONF)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
 		this.ServeJson()
 		return
 	}
-	defer db.Session.Close()
+	defer mgoCon.Close()
 
 	//判断是否已经存在该账号
-	info, err := models.GetAdminInfo(db, p["collection"], p["account"])
+	info, err := models.GetAdminInfo(mgoCon, p["account"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -132,7 +131,7 @@ func (this *SiteController) Register() {
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//保存注册信息
-	err = models.InsertAdminInfo(db, p["collection"], p["account"], p["passwd"], token, nowTime)
+	err = models.InsertAdminInfo(mgoCon, p["account"], p["passwd"], token, nowTime)
 	if nil == err {
 		//发送激活邮件
 		this.sendActivateMail(p["account"], p["account"], token)
@@ -165,25 +164,16 @@ func (this *SiteController) Activate() {
 		return
 	}
 
-	//获取mongo配置
-	collection := beego.AppConfig.String("table_admin_user")
-	mgourl_ir, _ := beego.GetConfig("string", "mgourlsomi")
-	mgourl, _ := mgourl_ir.(string)
-	if "" == mgourl {
-		this.Ctx.WriteString("Config mgourl is not exists")
-		return
-	}
-
 	//连接mongodb
-	db, err := models.ConnectMgo(mgourl)
+	mgoCon, err := models.ConnectMgo(MGO_CONF)
 	if nil != err {
 		this.Ctx.WriteString("激活失败：" + err.Error())
 		return
 	}
-	defer db.Session.Close()
+	defer mgoCon.Close()
 
 	//判断是否存在未激活的账号
-	info, err := models.GetNotActivateAdmin(db, collection, account)
+	info, err := models.GetNotActivateAdmin(mgoCon, account)
 	if nil != err {
 		this.Ctx.WriteString("激活失败：" + err.Error())
 		return
@@ -197,7 +187,7 @@ func (this *SiteController) Activate() {
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//激活账号
-	err = models.UnlockAdmin(db, collection, account, nowTime)
+	err = models.UnlockAdmin(mgoCon, account, nowTime)
 	if nil == err {
 		this.Redirect("/site/login", 302)
 		return
@@ -227,10 +217,8 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 	//获取并校验参数
 	account := this.GetString("account")
 	passwd := this.GetString("passwd")
-	regEmail := regexp.MustCompile(EMAILREG)
-	isEmail := regEmail.MatchString(account)
-	regPasswd := regexp.MustCompile(PASSWDREG)
-	isPasswd := regPasswd.MatchString(passwd)
+	isEmail := isMatch(account, EMAILREG)
+	isPasswd := isMatch(passwd, PASSWDREG)
 	if "" == account || !isEmail || "" == passwd {
 		err = errors.New("账号或密码错误")
 		return p, err
@@ -247,19 +235,9 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 	//md5 加密
 	passwd = md5Encode(passwd + PASSWD_SECURITY)
 
-	//获取mongo配置
-	collection := beego.AppConfig.String("table_admin_user")
-	mgourl_ir, _ := beego.GetConfig("string", "mgourlsomi")
-	mgourl, _ := mgourl_ir.(string)
-	if "" == mgourl {
-		err = errors.New("Config mgourl is not exists")
-		return p, err
-	}
 	p = map[string]string{
-		"account":    account,
-		"passwd":     passwd,
-		"mgourl":     mgourl,
-		"collection": collection,
+		"account": account,
+		"passwd":  passwd,
 	}
 	return p, err
 }

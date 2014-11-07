@@ -1,9 +1,11 @@
 package models
 
 import (
-	"errors"
+	"github.com/astaxie/beego"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+
+	"errors"
 	"strings"
 	"time"
 )
@@ -31,43 +33,45 @@ type (
 )
 
 const (
-	NOTFOUND string = "not found"
+	NOTFOUND   string = "not found" //not found one from mongo
+	SOMI              = "somi"
+	ADMIN_USER        = "admin.user"
+)
+
+var (
+	MgoCon *mgo.Session
 )
 
 //connect mongodb
-func ConnectMgo(url string) (db *mgo.Database, err error) {
-	if "" == url {
-		err = errors.New("mongo url is empty")
-		return db, err
+func ConnectMgo(confName string) (session *mgo.Session, err error) {
+	if "" == confName {
+		err = errors.New("mgo config name is empty")
+		return session, err
 	}
 
-	//get dbname
-	dbname := ""
+	//get mongo config
+	url_ir, _ := beego.GetConfig("string", confName)
+	url, _ := url_ir.(string)
+	if "" == url {
+		err = errors.New("mgo url is empty")
+		return session, err
+	}
 	if strings.HasPrefix(url, "mongodb://") {
 		url = url[10:]
 	}
 	if c := strings.Index(url, "?"); c != -1 {
 		url = url[:c]
 	}
-	if c := strings.Index(url, "/"); c != -1 {
-		dbname = url[c+1:]
-		dbname = strings.TrimSpace(dbname)
-	}
 
-	if "" == dbname {
-		err = errors.New("mongo db name is empty")
-		return db, err
-	}
-
-	session, err := mgo.DialWithTimeout(url, 3*time.Second)
+	//connect + timeout
+	session, err = mgo.DialWithTimeout(url, 5*time.Second)
 	if nil != err {
-		return db, err
+		return session, err
 	} else {
-		session.SetSyncTimeout(3 * time.Second)
-		session.SetSocketTimeout(3 * time.Second)
+		session.SetSyncTimeout(5 * time.Second)
+		session.SetSocketTimeout(5 * time.Second)
 	}
 
 	session.SetMode(mgo.Monotonic, true)
-	db = session.DB(dbname)
-	return db, err
+	return session, err
 }
