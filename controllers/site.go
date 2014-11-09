@@ -2,16 +2,33 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/utils"
 
 	"admin/models"
 
 	"errors"
+	"fmt"
+	"html/template"
 	"strconv"
 	"time"
 )
 
 type SiteController struct {
 	beego.Controller
+}
+
+//默认首页
+func (this *SiteController) Index() {
+	role, _ := this.GetSession("role").(string)
+	menu, err := getMenu(role)
+	if nil != err {
+		this.Ctx.WriteString(err.Error())
+	}
+	this.Data["Menu"] = menu
+	this.Data["Version"] = "1.0"
+	this.Layout = "layout.html"
+	this.TplNames = "index.tpl"
+	this.Render()
 }
 
 //登陆
@@ -54,13 +71,13 @@ func (this *SiteController) Login() {
 	}
 
 	//当前时间
-	//nowTime := time.Now().Format("2006-01-02 15:04:05")
+	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//设置session并返回
 	if role, ok := info["role"]; ok && "" != role {
 		this.SetSession("account", p["account"])
 		this.SetSession("role", role)
-		//models.SetAdminLoginTime(mgoCon, p["account"], nowTime)
+		models.SetAdminLoginTime(p["account"], nowTime)
 		result["succ"] = 1
 		result["msg"] = "登陆成功"
 	} else {
@@ -97,17 +114,17 @@ func (this *SiteController) Register() {
 	}
 
 	//连接mongodb
-	mgoCon, err := models.ConnectMgo(MGO_CONF)
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
 		this.ServeJson()
 		return
 	}
-	defer mgoCon.Close()
+	defer models.MgoCon.Close()
 
 	//判断是否已经存在该账号
-	info, err := models.GetAdminInfo(mgoCon, p["account"])
+	info, err := models.GetAdminInfo(p["account"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -131,7 +148,7 @@ func (this *SiteController) Register() {
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//保存注册信息
-	err = models.InsertAdminInfo(mgoCon, p["account"], p["passwd"], token, nowTime)
+	err = models.InsertAdminInfo(p["account"], p["passwd"], token, nowTime)
 	if nil == err {
 		//发送激活邮件
 		this.sendActivateMail(p["account"], p["account"], token)
@@ -164,16 +181,18 @@ func (this *SiteController) Activate() {
 		return
 	}
 
+	var err error
+
 	//连接mongodb
-	mgoCon, err := models.ConnectMgo(MGO_CONF)
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
 	if nil != err {
 		this.Ctx.WriteString("激活失败：" + err.Error())
 		return
 	}
-	defer mgoCon.Close()
+	defer models.MgoCon.Close()
 
 	//判断是否存在未激活的账号
-	info, err := models.GetNotActivateAdmin(mgoCon, account)
+	info, err := models.GetNotActivateAdmin(account)
 	if nil != err {
 		this.Ctx.WriteString("激活失败：" + err.Error())
 		return
@@ -187,7 +206,7 @@ func (this *SiteController) Activate() {
 	nowTime := time.Now().Format("2006-01-02 15:04:05")
 
 	//激活账号
-	err = models.UnlockAdmin(mgoCon, account, nowTime)
+	err = models.UnlockAdmin(account, nowTime)
 	if nil == err {
 		this.Redirect("/site/login", 302)
 		return
@@ -212,6 +231,12 @@ func (this *SiteController) sendActivateMail(account, mailto, token string) (err
 	return err
 }
 
+//没有权限
+func (this *SiteController) NoAuth() {
+	this.TplNames = "site/noauth.tpl"
+	this.Render()
+}
+
 //获取账号登陆或注册公共方法
 func (this *SiteController) getParams() (p map[string]string, err error) {
 	//获取并校验参数
@@ -220,16 +245,13 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 	isEmail := isMatch(account, EMAILREG)
 	isPasswd := isMatch(passwd, PASSWDREG)
 	if "" == account || !isEmail || "" == passwd {
-		err = errors.New("账号或密码错误")
-		return p, err
+		return p, errors.New("账号或密码错误")
 	}
 	if !isPasswd {
-		err = errors.New("密码必须为字母、数字、下划线")
-		return p, err
+		return p, errors.New("密码必须为字母、数字、下划线")
 	}
 	if len(passwd) < 8 {
-		err = errors.New("密码至少需要8个字符")
-		return p, err
+		return p, errors.New("密码至少需要8个字符")
 	}
 
 	//md5 加密
@@ -240,4 +262,101 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 		"passwd":  passwd,
 	}
 	return p, err
+}
+
+//获取导航
+func getMenu(role string) (menu template.HTML, err error) {
+	if "" == role {
+		return menu, errors.New("角色不能为空")
+	}
+	//获取导航配置
+	aMenu, bMenu, urlInfo, erra := models.GetMenuConfig()
+	if nil != erra {
+		return menu, errors.New("获取导航配置失败")
+	}
+
+	//获取权限配置
+	var auth []string
+	if "root" != role {
+		auth, err = models.GetAuthConfig(role)
+		if nil != err {
+			return menu, errors.New("获取权限配置失败")
+		}
+	}
+
+	//跳转链接的
+	hrefHtml := `<li><a href="%s">%s</a></li>`
+	//下拉式的
+	downHtml := `<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">%s <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">%s</ul>
+				</li>`
+
+	//如果有权限，则返回二级导航ID
+	var getAuthId = func(role, naid, nahref, naname string, bMenu map[string][]string, auth []string) (strHtml string) {
+		downli := ""
+		if nb, ok := bMenu[naid]; ok {
+			for _, nbid := range nb {
+				authstr := naid + ":" + nbid
+				if utils.InSlice(authstr, auth) || "root" == role {
+					if "" != nahref {
+						strHtml += fmt.Sprintf(hrefHtml, nahref, naname)
+						break
+					} else {
+						if nbinfo, ok := urlInfo[nbid]; ok {
+							downli += fmt.Sprintf(hrefHtml, nbinfo[0], nbinfo[1])
+						}
+					}
+				}
+			}
+		}
+		if "" == nahref && "" != downli {
+			strHtml += fmt.Sprintf(downHtml, naname, downli)
+		}
+		return strHtml
+	}
+
+	//循环拼接
+	menuStr := ""
+	for _, na := range aMenu {
+		naid := na[0]
+		nahref := na[1]
+		naname := na[2]
+		naStr := getAuthId(role, naid, nahref, naname, bMenu, auth)
+		menuStr += naStr
+	}
+
+	menu = template.HTML(menuStr)
+	return menu, err
+}
+
+//判断是否有权限
+func IsAuth(role, url string) (has bool, err error) {
+	//获取导航配置
+	_, bMenu, urlInfo, erra := models.GetMenuConfig()
+	if nil != erra {
+		return has, errors.New("获取导航配置失败")
+	}
+
+	//获取权限配置
+	auth, erra := models.GetAuthConfig(role)
+	if nil != erra {
+		return has, errors.New("获取权限配置失败")
+	}
+
+	//循环判断
+	for nbid, nbinfo := range urlInfo {
+		if url == nbinfo[0] {
+			for naid, nb := range bMenu {
+				if utils.InSlice(nbid, nb) {
+					authstr := naid + ":" + nbid
+					if utils.InSlice(authstr, auth) {
+						return true, err
+					}
+				}
+			}
+		}
+	}
+
+	return has, err
 }

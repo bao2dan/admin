@@ -71,15 +71,3 @@ func isMatch(s, r string) (result bool) {
 	result = reg.MatchString(s)
 	return result
 }
-
-//判断是否是超级管理员
-//param account string 账号
-func isRoot(account string) (result bool) {
-	var controller *beego.Controller
-	role := controller.GetSession("role")
-	result = false
-	if "root" == role {
-		result = true
-	}
-	return result
-}

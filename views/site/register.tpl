@@ -29,7 +29,7 @@
 
   <body>
 
-    <div class="container">
+    <div class="container-fluid">
 
       <form class="form-register">
         <h2 class="form-register-heading">SOMI管理系统</h2>

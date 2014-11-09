@@ -29,12 +29,12 @@
 
   <body>
 
-    <div class="container">
+    <div class="container-fluid">
 
       <form class="form-signin">
         <h2 class="form-signin-heading">SOMI管理系统</h2>
-        <input type="email" class="form-control" id="account" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" id="passwd" placeholder="Password" required>
+        <input type="email" class="form-control" id="account" value="584143515@qq.com" placeholder="Email address" required autofocus>
+        <input type="password" class="form-control" id="passwd" value="123123123" placeholder="Password" required>
         <div class="checkbox">
           <label>
             <input type="checkbox" value="remember-me"> Remember me
