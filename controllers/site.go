@@ -19,16 +19,99 @@ type SiteController struct {
 
 //默认首页
 func (this *SiteController) Index() {
-	role, _ := this.GetSession("role").(string)
-	menu, err := getMenu(role)
-	if nil != err {
-		this.Ctx.WriteString(err.Error())
-	}
-	this.Data["Menu"] = menu
 	this.Data["Version"] = "1.0"
 	this.Layout = "layout.html"
 	this.TplNames = "index.tpl"
 	this.Render()
+}
+
+//获取顶部导航栏
+func (this *SiteController) Menu() {
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": "", "menu": "", "account": ""}
+
+	//获取账号
+	account := this.GetSession("account")
+	result["account"] = account
+
+	//获取角色并验证
+	role, ok := this.GetSession("role").(string)
+	if !ok || "" == role {
+		result["msg"] = "角色不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+	//获取导航配置
+	aMenu, bMenu, urlInfo, erra := models.GetMenuConfig()
+	if nil != erra {
+		result["msg"] = "获取导航配置失败"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	//获取权限配置
+	var auth []string
+	var err error
+	if "root" != role {
+		auth, err = models.GetAuthConfig(role)
+		if nil != err {
+			result["msg"] = "获取权限配置失败"
+			this.Data["json"] = result
+			this.ServeJson()
+			return
+		}
+	}
+
+	//跳转链接的
+	hrefHtml := `<li><a href="%s">%s</a></li>`
+	//下拉式的
+	downHtml := `<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">%s <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">%s</ul>
+			</li>`
+
+	//如果有权限，则返回二级导航ID
+	var getAuthId = func(role, naid, nahref, naname string, bMenu map[string][]string, auth []string) (strHtml string) {
+		downli := ""
+		if nb, ok := bMenu[naid]; ok {
+			for _, nbid := range nb {
+				authstr := naid + ":" + nbid
+				if utils.InSlice(authstr, auth) || "root" == role {
+					if "" != nahref {
+						strHtml += fmt.Sprintf(hrefHtml, nahref, naname)
+						break
+					} else {
+						if nbinfo, ok := urlInfo[nbid]; ok {
+							downli += fmt.Sprintf(hrefHtml, nbinfo[0], nbinfo[1])
+						}
+					}
+				}
+			}
+		}
+		if "" == nahref && "" != downli {
+			strHtml += fmt.Sprintf(downHtml, naname, downli)
+		}
+		return strHtml
+	}
+
+	//循环拼接
+	menuStr := ""
+	for _, na := range aMenu {
+		naid := na[0]
+		nahref := na[1]
+		naname := na[2]
+		naStr := getAuthId(role, naid, nahref, naname, bMenu, auth)
+		menuStr += naStr
+	}
+
+	menu := template.HTML(menuStr)
+
+	result["succ"] = 1
+	result["menu"] = menu
+	this.Data["json"] = result
+	this.ServeJson()
 }
 
 //登陆
@@ -262,72 +345,6 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 		"passwd":  passwd,
 	}
 	return p, err
-}
-
-//获取导航
-func getMenu(role string) (menu template.HTML, err error) {
-	if "" == role {
-		return menu, errors.New("角色不能为空")
-	}
-	//获取导航配置
-	aMenu, bMenu, urlInfo, erra := models.GetMenuConfig()
-	if nil != erra {
-		return menu, errors.New("获取导航配置失败")
-	}
-
-	//获取权限配置
-	var auth []string
-	if "root" != role {
-		auth, err = models.GetAuthConfig(role)
-		if nil != err {
-			return menu, errors.New("获取权限配置失败")
-		}
-	}
-
-	//跳转链接的
-	hrefHtml := `<li><a href="%s">%s</a></li>`
-	//下拉式的
-	downHtml := `<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">%s <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">%s</ul>
-				</li>`
-
-	//如果有权限，则返回二级导航ID
-	var getAuthId = func(role, naid, nahref, naname string, bMenu map[string][]string, auth []string) (strHtml string) {
-		downli := ""
-		if nb, ok := bMenu[naid]; ok {
-			for _, nbid := range nb {
-				authstr := naid + ":" + nbid
-				if utils.InSlice(authstr, auth) || "root" == role {
-					if "" != nahref {
-						strHtml += fmt.Sprintf(hrefHtml, nahref, naname)
-						break
-					} else {
-						if nbinfo, ok := urlInfo[nbid]; ok {
-							downli += fmt.Sprintf(hrefHtml, nbinfo[0], nbinfo[1])
-						}
-					}
-				}
-			}
-		}
-		if "" == nahref && "" != downli {
-			strHtml += fmt.Sprintf(downHtml, naname, downli)
-		}
-		return strHtml
-	}
-
-	//循环拼接
-	menuStr := ""
-	for _, na := range aMenu {
-		naid := na[0]
-		nahref := na[1]
-		naname := na[2]
-		naStr := getAuthId(role, naid, nahref, naname, bMenu, auth)
-		menuStr += naStr
-	}
-
-	menu = template.HTML(menuStr)
-	return menu, err
 }
 
 //判断是否有权限

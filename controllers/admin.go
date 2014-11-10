@@ -35,13 +35,7 @@ func (this *AdminController) List() {
 }
 
 func (this *AdminController) Update() {
-	role, _ := this.GetSession("role").(string)
-	menu, err := getMenu(role)
-	if nil != err {
-		this.Ctx.WriteString(err.Error())
-	}
-	this.Data["Menu"] = menu
-	this.Data["Version"] = menu
+	this.Data["Version"] = "1.1"
 	this.Layout = "layout.html"
 	this.TplNames = "index.tpl"
 	this.Render()

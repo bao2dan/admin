@@ -15,6 +15,7 @@ func init() {
 	beego.Router("/site/register", &controllers.SiteController{}, "*:Register")
 	beego.Router("/site/activate", &controllers.SiteController{}, "get:Activate")
 	beego.Router("/site/noauth", &controllers.SiteController{}, "get:NoAuth")
+	beego.Router("/site/menu", &controllers.SiteController{}, "*:Menu")
 
 	//admin
 	beego.Router("/admin/list", &controllers.AdminController{}, "*:List")
