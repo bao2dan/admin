@@ -1,14 +1,17 @@
 package models
 
-func Test(account string) (info map[string]string, err error) {
+//get admin list
+func AdminList(account string) (list []interface{}, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	where := M{"account": account, "lock": "0"}
-	err = connect.Find(where).One(&info)
-	if nil != err && NOTFOUND == err.Error() {
-		err = nil
-		info = make(map[string]string)
+	where := M{}
+	if "" != account {
+		where = M{"account": account}
 	}
-	return info, err
+	err = connect.Find(where).Select(M{"_id": 0, "passwd": 0}).All(&list)
+	if nil == list {
+		list = make([]interface{}, 0)
+	}
+	return list, err
 }
 
 //解锁账号（激活）

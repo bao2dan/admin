@@ -12,8 +12,8 @@ import (
 
 func main() {
 	var filterDeal = func(ctx *context.Context) {
-		loginDeal(ctx)
-		authDeal(ctx)
+		//loginDeal(ctx)
+		//authDeal(ctx)
 	}
 
 	//添加过滤处理（在执行Controller前）

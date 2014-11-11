@@ -11,6 +11,16 @@ type AdminController struct {
 }
 
 func (this *AdminController) List() {
+	if !this.IsAjax() {
+		this.TplNames = "admin/list.tpl"
+		this.Render()
+		return
+	}
+
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": "", "list": ""}
+	account := this.GetString("account")
+
 	var err error
 	//连接mongodb
 	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
@@ -21,17 +31,15 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	info, err := models.Test("584143515@qq.com")
+	list, err := models.AdminList(account)
 	if nil != err {
-		this.Data["json"] = err.Error()
-		this.ServeJson()
-		return
+		result["msg"] = err.Error()
 	} else {
-		this.Data["json"] = info
-		this.ServeJson()
-		return
+		result["list"] = list
 	}
-
+	this.Data["json"] = result
+	this.ServeJson()
+	return
 }
 
 func (this *AdminController) Update() {
