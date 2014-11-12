@@ -19,7 +19,6 @@ type SiteController struct {
 
 //默认首页
 func (this *SiteController) Index() {
-	this.Data["Version"] = "1.0"
 	this.Layout = "layout.html"
 	this.TplNames = "index.tpl"
 	this.Render()
@@ -64,34 +63,38 @@ func (this *SiteController) Menu() {
 		}
 	}
 
-	//跳转链接的
-	hrefHtml := `<li><a href="%s">%s</a></li>`
+	//跳转链接的[与downHtml平级的]
+	hrefHtml := `<li><a href="%s">%s<span class="menu-text"> %s </span></a></li>`
 	//下拉式的
-	downHtml := `<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">%s <span class="caret"></span></a>
-				<ul class="dropdown-menu" role="menu">%s</ul>
-			</li>`
+	downHtml := `<li>
+                    <a href="#" class="dropdown-toggle">%s<span class="menu-text"> %s </span><b class="arrow icon-angle-down"></b></a>
+                    <ul class="submenu">
+                        %s
+                    </ul>
+                </li>`
+	//子跳转链接的[是downHtml的子li]
+	sonHrefHtml := `<li><a href="%s"><i class="icon-double-angle-right"></i><span class="menu-text"> %s </span></a></li>`
 
 	//如果有权限，则返回二级导航ID
-	var getAuthId = func(role, naid, nahref, naname string, bMenu map[string][]string, auth []string) (strHtml string) {
+	var getAuthId = func(role, naid, nahref, naname, naimg string, bMenu map[string][]string, auth []string) (strHtml string) {
 		downli := ""
 		if nb, ok := bMenu[naid]; ok {
 			for _, nbid := range nb {
 				authstr := naid + ":" + nbid
 				if utils.InSlice(authstr, auth) || "root" == role {
 					if "" != nahref {
-						strHtml += fmt.Sprintf(hrefHtml, nahref, naname)
+						strHtml += fmt.Sprintf(hrefHtml, nahref, naimg, naname)
 						break
 					} else {
 						if nbinfo, ok := urlInfo[nbid]; ok {
-							downli += fmt.Sprintf(hrefHtml, nbinfo[0], nbinfo[1])
+							downli += fmt.Sprintf(sonHrefHtml, nbinfo[0], nbinfo[1])
 						}
 					}
 				}
 			}
 		}
 		if "" == nahref && "" != downli {
-			strHtml += fmt.Sprintf(downHtml, naname, downli)
+			strHtml += fmt.Sprintf(downHtml, naimg, naname, downli)
 		}
 		return strHtml
 	}
@@ -102,7 +105,8 @@ func (this *SiteController) Menu() {
 		naid := na[0]
 		nahref := na[1]
 		naname := na[2]
-		naStr := getAuthId(role, naid, nahref, naname, bMenu, auth)
+		naimg := na[3]
+		naStr := getAuthId(role, naid, nahref, naname, naimg, bMenu, auth)
 		menuStr += naStr
 	}
 

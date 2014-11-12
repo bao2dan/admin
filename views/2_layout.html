@@ -16,8 +16,8 @@
         <![endif]-->
         
         <!-- page specific plugin styles -->
-        <!-- fonts 下面这个js暂时先注掉了 -->
-        <!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />-->
+        <!-- fonts -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />
 
         <!-- ace styles -->
         <link rel="stylesheet" href="/static/css/base/ace.min.css" />
@@ -68,11 +68,11 @@
                         <li class="light-blue">
                             <a data-toggle="dropdown" href="javascript:void(0);" class="dropdown-toggle">
                                 <img class="nav-user-photo" src="/static/images/avatars/user.jpg" alt="Your Photo" />
-                                <span class="user-info"><small>欢迎光临,</small><span id="nav-account">Jason</span></span>
+                                <span class="user-info"><small>欢迎光临,</small>Jason</span>
                                 <i class="icon-caret-down"></i>
                             </a>
 
-    </span>                        <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                            <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                                 <li>
                                     <a href="#"><i class="icon-cog"></i>设置</a>
                                 </li>
@@ -136,7 +136,7 @@
                     </div>
 
                     
-                    <ul id="nav-menu" class="nav nav-list">
+                    <ul class="nav nav-list">
                         <li class="active">
                             <a href="/"><i class="icon-dashboard"></i><span class="menu-text"> 控制台 </span></a>
                         </li>
@@ -245,9 +245,9 @@
         </div>
         <!-- /.main-container -->
 
-        <!-- basic scripts 下面这个js暂时先注掉了-->
+        <!-- basic scripts -->
         <!--[if !IE]> -->
-        <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <!-- <![endif]-->
 
         <!--[if IE]>
@@ -275,27 +275,39 @@
         <!-- ace scripts -->
         <script src="/static/js/base/ace-elements.min.js"></script>
         <script src="/static/js/base/ace.min.js"></script>
+
+        <!-- inline scripts related to this page -->
+        <script type="text/javascript">
+            jQuery(function($) {
+                var oTable1 = $('#sample-table-2').dataTable({
+                    "aoColumns": [
+                        {"bSortable": false},
+                        null, null, null, null, null,
+                        {"bSortable": false}
+                    ]});
+
+                $('table th input:checkbox').on('click', function() {
+                    var that = this;
+                    $(this).closest('table').find('tr > td:first-child input:checkbox').each(function() {
+                        this.checked = that.checked;
+                        $(this).closest('tr').toggleClass('selected');
+                    });
+                });
+
+                $('[data-rel="tooltip"]').tooltip({placement: tooltip_placement});
+                function tooltip_placement(context, source) {
+                    var $source = $(source);
+                    var $parent = $source.closest('table')
+                    var off1 = $parent.offset();
+                    var w1 = $parent.width();
+                    var off2 = $source.offset();
+                    var w2 = $source.width();
+                    if (parseInt(off2.left) < parseInt(off1.left) + parseInt(w1 / 2)) {
+                        return 'right';
+                    }
+                    return 'left';
+                }
+            })
+        </script>
     </body>
 </html>
-
-<script type="text/javascript">
-jQuery(function($) {
-    $.ajax({
-      type: "POST",
-      url: "/site/menu",
-      data: {},
-      dataType: "json",
-      cache: false,
-      timeout: 5000,
-      success:function(data){
-        if(data.succ){
-          $('#nav-menu').html(data.menu);
-          $('#nav-account').html(data.account);
-        }
-      },
-      error:function(){
-        alert("网络连接超时")
-      }
-    });
-});
-</script>

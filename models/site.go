@@ -46,22 +46,24 @@ func SetAdminLoginTime(account, nowTime string) (err error) {
 func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[string][]string, err error) {
 	//一级导航栏（正序显示）
 	aMenu = [][]string{
-		{"2", "", "基础"},
-		{"3", "", "商家"},
-		{"4", "", "活动"},
-		{"5", "", "统计"},
-		{"6", "/test", "测试"},
-		{"1", "", "管理员"},
+		{"2", "", "基础配置", "<i class='icon-cog'></i>"},
+		{"3", "", "监控管理", "<i class='icon-dashboard'></i>"},
+		{"4", "", "统计管理", "<i class='icon-bar-chart'></i>"},
+		{"5", "", "商家管理", "<i class='icon-eye-open'></i>"},
+		{"6", "", "活动管理", "<i class='icon-coffee'></i>"},
+		{"7", "", "阿里妈妈", "<i class='icon-laptop'></i>"},
+		{"1", "", "管理员", "<i class='icon-group'></i>"},
 	}
 
 	//二级导航栏（正序显示）
 	bMenu = map[string][]string{
 		"2": {"21", "31", "42", "51", "61"},
-		"3": {"71"},
-		"4": {"81", "82"},
-		"5": {"91"},
-		"6": {"101"},
-		"1": {"11", "12", "13", "14", "15"},
+		"3": {"71", "72"},
+		"4": {"81"},
+		"5": {"101", "102"},
+		"6": {"111", "112"},
+		"7": {"121", "122"},
+		"1": {"11"},
 	}
 
 	//所有操作集合（无序）
@@ -97,23 +99,30 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		"63": {"/category/update", "编辑类型"},
 		"64": {"/category/del", "删除类型"},
 
-		"71": {"/shop/list", "商家列表"},
-		"72": {"/shop/add", "新建商家"},
-		"73": {"/shop/update", "编辑商家"},
-		"74": {"/shop/del", "删除商家"},
+		"71": {"/monitor/server", "服务器"},
+		"72": {"/monitor/db", "数据库"},
 
-		"81": {"/activity/list", "活动列表"},
-		"82": {"/activity/add", "新建活动"},
-		"83": {"/activity/update", "编辑活动"},
-		"84": {"/activity/del", "删除活动"},
+		"81": {"/statis/alimama", "统计阿里妈妈"},
 
-		"91": {"/statis/list", "统计列表"},
+		"101": {"/shop/list", "商家列表"},
+		"102": {"/shop/add", "新建商家"},
+		"103": {"/shop/update", "编辑商家"},
+		"104": {"/shop/del", "删除商家"},
 
-		"101": {"/test/list", "测试"},
+		"111": {"/activity/list", "活动列表"},
+		"112": {"/activity/add", "新建活动"},
+		"113": {"/activity/update", "编辑活动"},
+		"114": {"/activity/del", "删除活动"},
+
+		"121": {"/alimama/list", "商品列表"},
+		"122": {"/alimama/add", "新建商品"},
+		"123": {"/alimama/update", "编辑商品"},
+		"124": {"/alimama/del", "删除商品"},
+		"125": {"/alimama/online", "上线商品"},
+		"126": {"/alimama/offline", "下线商品"},
 	}
 
 	return aMenu, bMenu, urlInfo, err
-
 }
 
 //获取权限配置
@@ -121,13 +130,10 @@ func GetAuthConfig(role string) (auth []string, err error) {
 	//权限分配
 	auths := map[string][]string{
 		"admin1": {
-			"3:71", "3:72", "3:73", "3:44",
-			"4:81", "4:82", "4:83", "4:84",
-			"5:91",
-		},
-		"admin2": {
-			"3:71", "3:72", "3:73", "3:74",
-			"4:81", "4:82", "4:83", "4:84",
+			"2:61", "2:62", "2:63", "2:64",
+			"5:101", "5:102", "5:103", "5:104",
+			"6:111", "6:112", "6:113", "6:114",
+			"7:121", "7:122", "7:123", "7:124", "7:125", "7:126",
 		},
 		"guest": {},
 	}

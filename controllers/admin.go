@@ -12,6 +12,7 @@ type AdminController struct {
 
 func (this *AdminController) List() {
 	if !this.IsAjax() {
+		this.Layout = "layout.html"
 		this.TplNames = "admin/list.tpl"
 		this.Render()
 		return
