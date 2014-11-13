@@ -24,6 +24,20 @@
         <link rel="stylesheet" href="/static/css/base/ace-ie.min.css" />
         <![endif]-->
 
+        <!-- basic scripts -->
+        <script src="/static/js/base/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript">
+            if ("ontouchend" in document) {
+                document.write("<script src='/static/js/base/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+            }
+        </script>
+        <script src="/static/js/base/bootstrap.min.js"></script>
+        <script src="/static/js/base/typeahead-bs2.min.js"></script>
+
+        <!-- ace scripts -->
+        <script src="/static/js/base/ace-elements.min.js"></script>
+        <script src="/static/js/base/ace.min.js"></script>
+
         <!-- inline styles related to this page -->
         <!-- ace settings handler -->
         <script src="/static/js/base/ace-extra.min.js"></script>
@@ -68,7 +82,7 @@
                                 <i class="icon-caret-down"></i>
                             </a>
 
-    </span>                        <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                            <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                                 <li>
                                     <a href="#"><i class="icon-cog"></i>设置</a>
                                 </li>
@@ -131,29 +145,10 @@
                         </div>
                     </div>
 
-                    
+                    <!-- 导航菜单栏start -->
                     <ul id="nav-menu" class="nav nav-list">
-                        <li class="active">
-                            <a href="/"><i class="icon-dashboard"></i><span class="menu-text"> 控制台 </span></a>
-                        </li>
-
-                        <li>
-                            <a href="typography.html"><i class="icon-text-width"></i><span class="menu-text"> 文字排版 </span></a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="dropdown-toggle"><i class="icon-list"></i><span class="menu-text"> 表格 </span><b class="arrow icon-angle-down"></b></a>
-                            <ul class="submenu">
-                                <li class="active">
-                                    <a href="tables.html"><i class="icon-double-angle-right"></i>简单 &amp; 动态</a>
-                                </li>
-                                <li>
-                                    <a href="jqgrid.html"><i class="icon-double-angle-right"></i>jqGrid plugin</a>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul><!-- /.nav-list -->
+                        
+                    </ul><!-- /.nav-list end -->
 
 
                     <div class="sidebar-collapse" id="sidebar-collapse">
@@ -240,25 +235,64 @@
             </a>
         </div>
         <!-- /.main-container -->
-
-        <!-- basic scripts 下面这个js暂时先注掉了-->
-        <script src="/static/js/base/jquery-2.0.3.min.js"></script>
-        <script type="text/javascript">
-            if ("ontouchend" in document) {
-                document.write("<script src='/static/js/base/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-            }
-        </script>
-        <script src="/static/js/base/bootstrap.min.js"></script>
-        <script src="/static/js/base/typeahead-bs2.min.js"></script>
-
-        <!-- ace scripts -->
-        <script src="/static/js/base/ace-elements.min.js"></script>
-        <script src="/static/js/base/ace.min.js"></script>
     </body>
 </html>
 
 <script type="text/javascript">
+//string format function
+String.prototype.format = function(args) {
+    var result = this;
+    if (arguments.length > 0) {    
+        if (arguments.length == 1 && typeof (args) == "object") {
+            for (var key in args) {
+                if(args[key]!=undefined){
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        }
+    } else {
+        for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] != undefined) {
+                var reg= new RegExp("({)" + i + "(})", "g");
+                result = result.replace(reg, arguments[i]);
+            }
+        }
+    }
+    return result;
+}
+
+// data table config
+var DataTableConfig = {
+    "oLanguage": {
+        "sLengthMenu": "每页显示_MENU_条记录",
+        "sZeroRecords": "抱歉， 没有找到",
+        "sInfo": "从_START_到_END_/共_TOTAL_条数据",
+        "sInfoEmpty": "没有数据",
+        "sInfoFiltered": "(从_MAX_条数据中检索)",
+        "oPaginate": {
+            "sFirst": "首页",
+            "sPrevious": "前一页",
+            "sNext": "后一页",
+            "sLast": "尾页"
+        }
+    },
+    "sZeroRecords": "没有检索到数据",
+};
+
+//It run since page loading is complete
 $(function() {
+    //表记录全选操作
+    $('table th input:checkbox').on('click' , function(){
+        var that = this;
+        $(this).closest('table').find('tr > td:first-child input:checkbox')
+        .each(function(){
+            this.checked = that.checked;
+            $(this).closest('tr').toggleClass('selected');
+        });
+    });
+
+    //get site info(menu, account)
     $.ajax({
       type: "POST",
       url: "/site/menu",

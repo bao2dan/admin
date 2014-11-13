@@ -1,7 +1,7 @@
 package models
 
 //get admin list
-func AdminList(account string) (list []interface{}, err error) {
+func AdminList(account string) (list []map[string]interface{}, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	where := M{}
 	if "" != account {
@@ -9,7 +9,7 @@ func AdminList(account string) (list []interface{}, err error) {
 	}
 	err = connect.Find(where).Select(M{"_id": 0, "passwd": 0}).All(&list)
 	if nil == list {
-		list = make([]interface{}, 0)
+		list = make([]map[string]interface{}, 0)
 	}
 	return list, err
 }

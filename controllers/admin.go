@@ -35,9 +35,19 @@ func (this *AdminController) List() {
 	list, err := models.AdminList(account)
 	if nil != err {
 		result["msg"] = err.Error()
-	} else {
-		result["list"] = list
 	}
+
+	var rows []interface{}
+	for _, row := range list {
+		line := []interface{}{row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], row["lock"]}
+		rows = append(rows, line)
+	}
+	result["iTotalDisplayRecords"] = len(rows)
+	result["iTotalRecords"] = len(rows)
+	result["aaData"] = rows
+	result["sEcho"] = 1
+	result["succ"] = 1
+
 	this.Data["json"] = result
 	this.ServeJson()
 	return

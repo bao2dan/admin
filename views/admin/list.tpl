@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table id="sample-table-2" class="table table-striped table-bordered table-hover">
+                    <table id="table_admin_list" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th class="center">
@@ -29,16 +29,13 @@
                                         <span class="lbl"></span>
                                     </label>
                                 </th>
-                                <th>Domain</th>
-                                <th>Price</th>
-                                <th class="hidden-480">Clicks</th>
-
-                                <th>
-                                    <i class="icon-time bigger-110 hidden-480"></i>
-                                    Update
-                                </th>
-                                <th class="hidden-480">Status</th>
-
+                                <th>Account</th>
+                                <th>Role</th>
+                                <th class="hidden-480">Email</th>
+                                <th class="hidden-480">Create Time</th>
+                                <th class="hidden-480">Last Update Time</th>
+                                <th>Last Login Time</th>
+                                <th>status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -53,499 +50,21 @@
                                     </label>
                                 </td>
 
-                                <td>
-                                    <a href="#">app.com</a>
-                                </td>
-                                <td>$45</td>
-                                <td class="hidden-480">3,330</td>
-                                <td>Feb 12</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-warning">Expiring</span>
-                                </td>
+                                <td>584143515@qq.com</td>
+                                <td>root</td>
+                                <td class="hidden-480">584143515@qq.com</td>
+                                <td class="hidden-480">2014-11-10 12:12:10</td>
+                                <td class="hidden-480">2014-11-11 12:12:20</td>
+                                <td>2014-11-13 14:12:10</td>
 
                                 <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">base.com</a>
-                                </td>
-                                <td>$35</td>
-                                <td class="hidden-480">2,595</td>
-                                <td>Feb 18</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-success">Registered</span>
+                                    <span class="label label-sm label-warning">lock</span>
                                 </td>
 
                                 <td>
                                     <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                                         <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">max.com</a>
-                                </td>
-                                <td>$60</td>
-                                <td class="hidden-480">4,400</td>
-                                <td>Mar 11</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-warning">Expiring</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">best.com</a>
-                                </td>
-                                <td>$75</td>
-                                <td class="hidden-480">6,500</td>
-                                <td>Apr 03</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-inverse arrowed-in">Flagged</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">pro.com</a>
-                                </td>
-                                <td>$55</td>
-                                <td class="hidden-480">4,250</td>
-                                <td>Jan 21</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-success">Registered</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">team.com</a>
-                                </td>
-                                <td>$40</td>
-                                <td class="hidden-480">3,200</td>
-                                <td>Feb 09</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-inverse arrowed-in">Flagged</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">up.com</a>
-                                </td>
-                                <td>$95</td>
-                                <td class="hidden-480">8,520</td>
-                                <td>Feb 22</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-info arrowed arrowed-righ">Sold</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">view.com</a>
-                                </td>
-                                <td>$45</td>
-                                <td class="hidden-480">4,100</td>
-                                <td>Mar 12</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-success">Registered</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">nice.com</a>
-                                </td>
-                                <td>$38</td>
-                                <td class="hidden-480">3,940</td>
-                                <td>Feb 12</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-info arrowed arrowed-righ">Sold</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">fine.com</a>
-                                </td>
-                                <td>$25</td>
-                                <td class="hidden-480">2,983</td>
-                                <td>Apr 01</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-warning">Expiring</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">good.com</a>
-                                </td>
-                                <td>$50</td>
-                                <td class="hidden-480">6,500</td>
-                                <td>Feb 02</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-inverse arrowed-in">Flagged</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">great.com</a>
-                                </td>
-                                <td>$55</td>
-                                <td class="hidden-480">6,400</td>
-                                <td>Feb 24</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-success">Registered</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">shine.com</a>
-                                </td>
-                                <td>$25</td>
-                                <td class="hidden-480">2,200</td>
-                                <td>Apr 01</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-inverse arrowed-in">Flagged</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">rise.com</a>
-                                </td>
-                                <td>$42</td>
-                                <td class="hidden-480">3,900</td>
-                                <td>Feb 01</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-info arrowed arrowed-righ">Sold</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>
-                                    <a href="#">above.com</a>
-                                </td>
-                                <td>$35</td>
-                                <td class="hidden-480">3,420</td>
-                                <td>Mar 12</td>
-
-                                <td class="hidden-480">
-                                    <span class="label label-sm label-warning">Expiring</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-zoom-in bigger-130"></i>
+                                            <i class="icon-lock bigger-130"></i>
                                         </a>
                                         <a class="green" href="#">
                                             <i class="icon-pencil bigger-130"></i>
@@ -562,8 +81,8 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
         <!-- PAGE CONTENT ENDS -->
     </div>
 </div><!-- /.row -->
@@ -571,3 +90,164 @@
 <!-- page specific plugin scripts -->
 <script src="/static/js/base/jquery.dataTables.min.js"></script>
 <script src="/static/js/base/jquery.dataTables.bootstrap.js"></script>
+
+<script type="text/javascript">
+    var Somi = {
+        //data table
+        dataTable: function() {
+            var config = DataTableConfig;
+            config.sAjaxSource = "/admin/list?rand=" + Math.random();
+            config.aoColumns = [
+                    {"bSortable": false},
+                    {"bSortable": false},
+                    null, 
+                    {"bSortable": false}, 
+                    {'bSearchable':false}, 
+                    null, null, null,
+                    {"bSortable": false}
+                ];
+            config.bProcessing = true;
+            config.bServerSide = true;
+            config.fnServerData = function(sSource, aoData, fnCallback){
+                aoData.push( { "name": "bao2dan", "value": "hahahaha" } );
+                $.ajax( {
+                    type: "POST",
+                    url: sSource,
+                    data: aoData,
+                    dataType: "json",
+                    cache: false,
+                    timeout: 5000,
+                    success: fnCallback
+                });
+            }
+            $('#table_admin_list').dataTable(config);
+        },
+
+        //format admin list(ajax)
+        formatAdminList: function() {
+            var liHtml = "";
+            var liStr = '<tr>\
+                            <td class="center">\
+                                <label>\
+                                    <input type="checkbox" class="ace" />\
+                                    <span class="lbl"></span>\
+                                </label>\
+                            </td>\
+                            <td>{account}</td>\
+                            <td>{role}</td>\
+                            <td class="hidden-480">{email}</td>\
+                            <td class="hidden-480">{create_time}</td>\
+                            <td class="hidden-480">{update_time}</td>\
+                            <td>{login_time}</td>\
+                            <td>\
+                                <span class="label label-sm {status_class}">{status}</span>\
+                            </td>\
+                            <td>\
+                                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">\
+                                    <a class="blue" href="#">\
+                                        <i class="{btn_class} bigger-130"></i>\
+                                    </a>\
+                                    <a class="green" href="#">\
+                                        <i class="icon-pencil bigger-130"></i>\
+                                    </a>\
+                                    <a class="red" href="#">\
+                                        <i class="icon-trash bigger-130"></i>\
+                                    </a>\
+                                </div>\
+                            </td>\
+                        </tr>';
+
+            for (i = 0; i < data.list.length; i++) {
+                var account = data.list[i].account;
+                var role = data.list[i].role;
+                var email = data.list[i].email;
+                var lock = data.list[i].lock;
+                var create_time = data.list[i].create_time;
+                var update_time = data.list[i].update_time;
+                var login_time = data.list[i].login_time;
+                var status = "lock", status_class = "label-warning", btn_class = "icon-lock";
+                if ("0" === lock) {
+                    status = "unlock";
+                    status_class = "label-success";
+                    btn_class = "icon-unlock";
+                }
+                liHtml += liStr.format({account: account, role: role, email: email, status_class: status_class, status: status, btn_class: btn_class, create_time: create_time, update_time: update_time, login_time: login_time});
+            }
+            $('#table_admin_list tbody').html(liHtml);
+
+        },
+
+        //get admin list(ajax)
+        getAdminList2: function() {
+            var liHtml = "";
+            var liStr = '<tr>\
+                            <td class="center">\
+                                <label>\
+                                    <input type="checkbox" class="ace" />\
+                                    <span class="lbl"></span>\
+                                </label>\
+                            </td>\
+                            <td>{account}</td>\
+                            <td>{role}</td>\
+                            <td class="hidden-480">{email}</td>\
+                            <td class="hidden-480">{create_time}</td>\
+                            <td class="hidden-480">{update_time}</td>\
+                            <td>{login_time}</td>\
+                            <td>\
+                                <span class="label label-sm {status_class}">{status}</span>\
+                            </td>\
+                            <td>\
+                                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">\
+                                    <a class="blue" href="#">\
+                                        <i class="{btn_class} bigger-130"></i>\
+                                    </a>\
+                                    <a class="green" href="#">\
+                                        <i class="icon-pencil bigger-130"></i>\
+                                    </a>\
+                                    <a class="red" href="#">\
+                                        <i class="icon-trash bigger-130"></i>\
+                                    </a>\
+                                </div>\
+                            </td>\
+                        </tr>';
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/list?rand=" + Math.random(),
+                data: {},
+                dataType: "json",
+                cache: false,
+                timeout: 5000,
+                success: function(data) {
+                    if (data.succ) {
+                        for (i = 0; i < data.list.length; i++) {
+                            var account = data.list[i].account;
+                            var role = data.list[i].role;
+                            var email = data.list[i].email;
+                            var lock = data.list[i].lock;
+                            var create_time = data.list[i].create_time;
+                            var update_time = data.list[i].update_time;
+                            var login_time = data.list[i].login_time;
+                            var status = "lock", status_class = "label-warning", btn_class = "icon-lock";
+                            if ("0" === lock) {
+                                status = "unlock";
+                                status_class = "label-success";
+                                btn_class = "icon-unlock";
+                            }
+                            liHtml += liStr.format({account: account, role: role, email: email, status_class: status_class, status: status, btn_class: btn_class, create_time: create_time, update_time: update_time, login_time: login_time});
+                        }
+                        $('#table_admin_list tbody').html(liHtml);
+                        Somi.dataTable();
+                    }
+                },
+                error: function() {
+                    alert("网络连接超时")
+                }
+            });
+        }
+    }
+    $(function() {
+        //Somi.getAdminList();
+        Somi.dataTable();
+    });
+</script>
