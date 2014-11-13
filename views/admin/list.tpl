@@ -567,3 +567,7 @@
         <!-- PAGE CONTENT ENDS -->
     </div>
 </div><!-- /.row -->
+
+<!-- page specific plugin scripts -->
+<script src="/static/js/base/jquery.dataTables.min.js"></script>
+<script src="/static/js/base/jquery.dataTables.bootstrap.js"></script>

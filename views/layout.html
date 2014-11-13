@@ -14,10 +14,6 @@
         <!--[if IE 7]>
         <link rel="stylesheet" href="/static/css/base/font-awesome-ie7.min.css" />
         <![endif]-->
-        
-        <!-- page specific plugin styles -->
-        <!-- fonts 下面这个js暂时先注掉了 -->
-        <!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />-->
 
         <!-- ace styles -->
         <link rel="stylesheet" href="/static/css/base/ace.min.css" />
@@ -246,20 +242,7 @@
         <!-- /.main-container -->
 
         <!-- basic scripts 下面这个js暂时先注掉了-->
-        <!--[if !IE]> -->
-        <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
-        <!-- <![endif]-->
-
-        <!--[if IE]>
-        <script type="text/javascript">
-            window.jQuery || document.write("<script src='/static/js/base/jquery-1.10.2.min.js'>"+"<"+"/script>");
-        </script>
-        <![endif]-->
-
-        <script type="text/javascript">
-            window.jQuery || document.write("<script src='/static/js/base/jquery-2.0.3.min.js'>" + "<" + "/script>");
-        </script>
-
+        <script src="/static/js/base/jquery-2.0.3.min.js"></script>
         <script type="text/javascript">
             if ("ontouchend" in document) {
                 document.write("<script src='/static/js/base/jquery.mobile.custom.min.js'>" + "<" + "/script>");
@@ -268,10 +251,6 @@
         <script src="/static/js/base/bootstrap.min.js"></script>
         <script src="/static/js/base/typeahead-bs2.min.js"></script>
 
-        <!-- page specific plugin scripts -->
-        <script src="/static/js/base/jquery.dataTables.min.js"></script>
-        <script src="/static/js/base/jquery.dataTables.bootstrap.js"></script>
-
         <!-- ace scripts -->
         <script src="/static/js/base/ace-elements.min.js"></script>
         <script src="/static/js/base/ace.min.js"></script>
@@ -279,7 +258,7 @@
 </html>
 
 <script type="text/javascript">
-jQuery(function($) {
+$(function() {
     $.ajax({
       type: "POST",
       url: "/site/menu",
