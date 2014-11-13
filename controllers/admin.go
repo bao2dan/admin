@@ -22,7 +22,7 @@ func (this *AdminController) List() {
 	}
 
 	//result map
-	result := map[string]interface{}{"succ": 0, "msg": "", "list": ""}
+	result := map[string]interface{}{"succ": 0, "msg": ""}
 	account := this.GetString("account")
 
 	var err error

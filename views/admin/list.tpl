@@ -23,7 +23,7 @@
                     <table id="table_admin_list" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="center">
+                                <th>
                                     <label>
                                         <input type="checkbox" class="ace" />
                                         <span class="lbl"></span>
@@ -31,18 +31,18 @@
                                 </th>
                                 <th>Account</th>
                                 <th>Role</th>
-                                <th class="hidden-480">Email</th>
-                                <th class="hidden-480">Create Time</th>
-                                <th class="hidden-480">Last Update Time</th>
-                                <th>Last Login Time</th>
-                                <th>status</th>
-                                <th></th>
+                                <th>Email</th>
+                                <th>Create Time</th>
+                                <th>Update Time</th>
+                                <th>Login Time</th>
+                                <th>Status</th>
+                                <th>Operation</th>
                             </tr>
                         </thead>
 
                         <tbody>
 
-                            <tr>
+                            <tr style="display:none;">
                                 <td class="center">
                                     <label>
                                         <input type="checkbox" class="ace" />
@@ -98,13 +98,15 @@
             var config = DataTableConfig;
             config.sAjaxSource = "/admin/list?rand=" + Math.random();
             config.aoColumns = [
-                    {"bSortable": false},
-                    {"bSortable": false},
+                    {"bSortable":false, "bSearchable":false},
+                    {"bSortable":false},
+                    null,
+                    {"bSortable":false,}, 
                     null, 
-                    {"bSortable": false}, 
-                    {'bSearchable':false}, 
-                    null, null, null,
-                    {"bSortable": false}
+                    null, 
+                    null,
+                    {"bSearchable":false},
+                    {"bSortable":false, "bSearchable":false}
                 ];
             config.bProcessing = false;
             config.bServerSide = true;
