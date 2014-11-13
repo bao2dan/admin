@@ -4,6 +4,9 @@ import (
 	"github.com/astaxie/beego"
 
 	"admin/models"
+
+	"fmt"
+	"html/template"
 )
 
 type AdminController struct {
@@ -38,8 +41,36 @@ func (this *AdminController) List() {
 	}
 
 	var rows []interface{}
+	seHtml := `<label>
+	                <input type="checkbox" class="ace" />
+	                <span class="lbl"></span>
+	            </label>`
+	statusHtmlStr := `<span class="label label-sm %s">%s</span>`
+	opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+	                <a class="blue" href="#">
+	                    <i class="%s bigger-130"></i>
+	                </a>
+	                <a class="green" href="#">
+	                    <i class="icon-pencil bigger-130"></i>
+	                </a>
+	                <a class="red" href="#">
+	                    <i class="icon-trash bigger-130"></i>
+	                </a>
+	            </div>`
+
 	for _, row := range list {
-		line := []interface{}{row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], row["lock"]}
+		lock, _ := row["lock"]
+		status := "已激活"
+		statusClass := "label-success"
+		btnClass := "icon-unlock"
+		if "1" == lock {
+			status = "已锁定"
+			statusClass = "label-warning"
+			btnClass = "icon-lock"
+		}
+		statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
+		opHtml := template.HTML(fmt.Sprintf(opHtmlStr, btnClass))
+		line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
 		rows = append(rows, line)
 	}
 	result["iTotalDisplayRecords"] = len(rows)

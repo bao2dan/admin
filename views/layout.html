@@ -265,8 +265,9 @@ String.prototype.format = function(args) {
 // data table config
 var DataTableConfig = {
     "oLanguage": {
+        "sProcessing": "正在加载中......",
         "sLengthMenu": "每页显示_MENU_条记录",
-        "sZeroRecords": "抱歉， 没有找到",
+        "sZeroRecords": "抱歉，没有检索到相关数据！",
         "sInfo": "从_START_到_END_/共_TOTAL_条数据",
         "sInfoEmpty": "没有数据",
         "sInfoFiltered": "(从_MAX_条数据中检索)",
@@ -277,7 +278,6 @@ var DataTableConfig = {
             "sLast": "尾页"
         }
     },
-    "sZeroRecords": "没有检索到数据",
 };
 
 //It run since page loading is complete

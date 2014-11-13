@@ -106,7 +106,7 @@
                     null, null, null,
                     {"bSortable": false}
                 ];
-            config.bProcessing = true;
+            config.bProcessing = false;
             config.bServerSide = true;
             config.fnServerData = function(sSource, aoData, fnCallback){
                 aoData.push( { "name": "bao2dan", "value": "hahahaha" } );
