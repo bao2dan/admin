@@ -10,8 +10,6 @@ import (
 	"errors"
 	"regexp"
 	"strconv"
-
-	"fmt"
 )
 
 const (
@@ -80,52 +78,56 @@ func isMatch(s, r string) (result bool) {
 	return result
 }
 
+//获取表格列表相关数据
 func dateTableCondition(fileds []string, ctx *context.Context) (table M) {
+	//获取skip和limit
+	iDisplayStart := ctx.Input.Query("iDisplayStart")
+	skip, _ := strconv.Atoi(iDisplayStart)
+	iDisplayLength := ctx.Input.Query("iDisplayLength")
+	limit, _ := strconv.Atoi(iDisplayLength)
 	table = M{
-		"iDisplayStart":        0,
-		"iDisplayLength":       10,
-		"sSort":                "",
-		"sWhere":               M{},
-		"iTotalDisplayRecords": 0,
-		"iTotalRecords":        0,
-		"aaData":               []interface{}{},
+		"iDisplayStart":  skip,
+		"iDisplayLength": limit,
+		"sSort":          "-_id",
+		"sWhere":         M{},
 	}
-	sSearch := ctx.Input.Query("sSearch")
-	fmt.Println("================")
-	fmt.Println(sSearch)
-	fmt.Println("================")
 
+	//获取搜索条件
+	sSearch := ctx.Input.Query("sSearch")
 	regSearch := M{}
 	if "" != sSearch {
-		regSearch = M{"$regex": `/*` + sSearch + `*/i`}
+		regSearch = M{"$regex": sSearch, "$options": "i"}
 	}
 
-	//sWhere := map[int64]interface{}{}
+	//获取排序
+	iSort := ctx.Input.Query("iSortCol_0")
+	sortNo, _ := strconv.Atoi(iSort)
+	sortDir := ctx.Input.Query("sSortDir_0")
+
+	//处理搜索条件
 	sWhere := []interface{}{}
-	var i int64 = 0
 	for k, v := range fileds {
 		if "" == v {
 			continue
 		}
 		isSearch := ctx.Input.Query("bSearchable_" + strconv.Itoa(k))
-		if "true" == isSearch {
+		if "" != sSearch && "true" == isSearch {
 			sWhere = append(sWhere, M{v: regSearch})
-			//sWhere[i] = M{v: regSearch}
-			i++
 		}
 
-		isSort := ctx.Input.Query("iSortCol_0")
-		sortNo, _ := strconv.Atoi(isSort)
+		//排序
 		if k == sortNo {
-			sortDir := ctx.Input.Query("sSortDir_0")
+			sSort := "+" + v
 			if "desc" == sortDir {
-				table["sSort"] = "-" + v
-			} else {
-				table["sSort"] = "+" + v
+				sSort = "-" + v
 			}
+			table["sSort"] = sSort
 		}
 	}
-	table["sWhere"] = M{"$or": sWhere}
-	fmt.Println(table)
+	where := M{}
+	if len(sWhere) > 0 {
+		where = M{"$or": sWhere}
+	}
+	table["sWhere"] = where
 	return table
 }

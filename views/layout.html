@@ -265,7 +265,7 @@ String.prototype.format = function(args) {
 
 // data table config
 var DataTableConfig = {
-    "bProcessing": false,
+    "bProcessing": true,
     "bServerSide": true,
     "aaSorting": {},
     "oLanguage": {
@@ -273,8 +273,8 @@ var DataTableConfig = {
         "sLengthMenu": "每页显示_MENU_条记录",
         "sSearch": "搜索:",
         "sZeroRecords": "抱歉，没有检索到相关数据！",
-        "sInfo": "从_START_到_END_/共_TOTAL_条数据",
-        "sInfoEmpty": "没有数据",
+        "sInfo": "从<span style='color:green;'> _START_ </span>到<span style='color:green;'> _END_ </span> / 共<span style='color:green;'> _TOTAL_ </span>条数据",
+        "sInfoEmpty": "",
         "sInfoFiltered": "(从_MAX_条数据中检索)",
         "oPaginate": {
             "sFirst": "首页",

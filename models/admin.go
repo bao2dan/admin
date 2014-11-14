@@ -3,13 +3,11 @@ package models
 //get admin list
 func AdminList(table map[string]interface{}) (list []map[string]interface{}, count int, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	where, _ := table["sWhere"].(M)
+	where, _ := table["sWhere"]
 	skip, _ := table["iDisplayStart"].(int)
 	limit, _ := table["iDisplayLength"].(int)
 	sort, _ := table["sSort"].(string)
-	if "" == sort {
-		sort = "-login_time"
-	}
+
 	count, err = connect.Find(where).Count()
 	if nil != err {
 		count = 0

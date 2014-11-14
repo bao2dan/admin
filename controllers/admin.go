@@ -34,19 +34,18 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "status", ""}
+	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "lock", ""}
 	table := dateTableCondition(fileds, this.Ctx)
 
-	var rows []interface{}
+	rows := []interface{}{}
 	list, count, err := models.AdminList(table)
-	fmt.Println(list)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
 		seHtml := `<label>
-			                <input type="checkbox" class="ace" />
-			                <span class="lbl"></span>
-			            </label>`
+		                <input type="checkbox" class="ace" />
+		                <span class="lbl"></span>
+		            </label>`
 		statusHtmlStr := `<span class="label label-sm %s">%s</span>`
 		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
 			                <a class="blue" href="#">
