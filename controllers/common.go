@@ -2,12 +2,16 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/utils"
 
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"regexp"
+	"strconv"
+
+	"fmt"
 )
 
 const (
@@ -16,6 +20,10 @@ const (
 	EMAILREG         string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$` //email正则
 	PASSWDREG        string = `^[A-Za-z0-9_]+$`                                                         //设置的密码的正则
 	MGO_CONF         string = "mgour"                                                                   //somi mongo连接串的配置名
+)
+
+type (
+	M map[string]interface{}
 )
 
 //发送邮件
@@ -70,4 +78,54 @@ func isMatch(s, r string) (result bool) {
 	reg := regexp.MustCompile(r)
 	result = reg.MatchString(s)
 	return result
+}
+
+func dateTableCondition(fileds []string, ctx *context.Context) (table M) {
+	table = M{
+		"iDisplayStart":        0,
+		"iDisplayLength":       10,
+		"sSort":                "",
+		"sWhere":               M{},
+		"iTotalDisplayRecords": 0,
+		"iTotalRecords":        0,
+		"aaData":               []interface{}{},
+	}
+	sSearch := ctx.Input.Query("sSearch")
+	fmt.Println("================")
+	fmt.Println(sSearch)
+	fmt.Println("================")
+
+	regSearch := M{}
+	if "" != sSearch {
+		regSearch = M{"$regex": `/*` + sSearch + `*/i`}
+	}
+
+	//sWhere := map[int64]interface{}{}
+	sWhere := []interface{}{}
+	var i int64 = 0
+	for k, v := range fileds {
+		if "" == v {
+			continue
+		}
+		isSearch := ctx.Input.Query("bSearchable_" + strconv.Itoa(k))
+		if "true" == isSearch {
+			sWhere = append(sWhere, M{v: regSearch})
+			//sWhere[i] = M{v: regSearch}
+			i++
+		}
+
+		isSort := ctx.Input.Query("iSortCol_0")
+		sortNo, _ := strconv.Atoi(isSort)
+		if k == sortNo {
+			sortDir := ctx.Input.Query("sSortDir_0")
+			if "desc" == sortDir {
+				table["sSort"] = "-" + v
+			} else {
+				table["sSort"] = "+" + v
+			}
+		}
+	}
+	table["sWhere"] = M{"$or": sWhere}
+	fmt.Println(table)
+	return table
 }

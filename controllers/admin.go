@@ -23,7 +23,6 @@ func (this *AdminController) List() {
 
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
-	account := this.GetString("account")
 
 	var err error
 	//连接mongodb
@@ -35,48 +34,51 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	list, err := models.AdminList(account)
-	if nil != err {
-		result["msg"] = err.Error()
-	}
+	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "status", ""}
+	table := dateTableCondition(fileds, this.Ctx)
 
 	var rows []interface{}
-	seHtml := `<label>
-	                <input type="checkbox" class="ace" />
-	                <span class="lbl"></span>
-	            </label>`
-	statusHtmlStr := `<span class="label label-sm %s">%s</span>`
-	opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-	                <a class="blue" href="#">
-	                    <i class="%s bigger-130"></i>
-	                </a>
-	                <a class="green" href="#">
-	                    <i class="icon-pencil bigger-130"></i>
-	                </a>
-	                <a class="red" href="#">
-	                    <i class="icon-trash bigger-130"></i>
-	                </a>
-	            </div>`
+	list, count, err := models.AdminList(table)
+	fmt.Println(list)
+	if nil != err {
+		result["msg"] = err.Error()
+	} else {
+		seHtml := `<label>
+			                <input type="checkbox" class="ace" />
+			                <span class="lbl"></span>
+			            </label>`
+		statusHtmlStr := `<span class="label label-sm %s">%s</span>`
+		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+			                <a class="blue" href="#">
+			                    <i class="%s bigger-130"></i>
+			                </a>
+			                <a class="green" href="#">
+			                    <i class="icon-pencil bigger-130"></i>
+			                </a>
+			                <a class="red" href="#">
+			                    <i class="icon-trash bigger-130"></i>
+			                </a>
+			            </div>`
 
-	for _, row := range list {
-		lock, _ := row["lock"]
-		status := "已激活"
-		statusClass := "label-success"
-		btnClass := "icon-unlock"
-		if "1" == lock {
-			status = "已锁定"
-			statusClass = "label-warning"
-			btnClass = "icon-lock"
+		for _, row := range list {
+			lock, _ := row["lock"]
+			status := "已激活"
+			statusClass := "label-success"
+			btnClass := "icon-unlock"
+			if "1" == lock {
+				status = "已锁定"
+				statusClass = "label-warning"
+				btnClass = "icon-lock"
+			}
+			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
+			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, btnClass))
+			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
+			rows = append(rows, line)
 		}
-		statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
-		opHtml := template.HTML(fmt.Sprintf(opHtmlStr, btnClass))
-		line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
-		rows = append(rows, line)
 	}
-	result["iTotalDisplayRecords"] = len(rows)
-	result["iTotalRecords"] = len(rows)
+	result["iTotalDisplayRecords"] = count
+	result["iTotalRecords"] = count
 	result["aaData"] = rows
-	result["sEcho"] = 1
 	result["succ"] = 1
 
 	this.Data["json"] = result

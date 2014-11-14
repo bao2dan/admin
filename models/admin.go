@@ -1,17 +1,24 @@
 package models
 
 //get admin list
-func AdminList(account string) (list []map[string]interface{}, err error) {
+func AdminList(table map[string]interface{}) (list []map[string]interface{}, count int, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	where := M{}
-	if "" != account {
-		where = M{"account": account}
+	where, _ := table["sWhere"].(M)
+	skip, _ := table["iDisplayStart"].(int)
+	limit, _ := table["iDisplayLength"].(int)
+	sort, _ := table["sSort"].(string)
+	if "" == sort {
+		sort = "-login_time"
 	}
-	err = connect.Find(where).Select(M{"_id": 0, "passwd": 0}).All(&list)
+	count, err = connect.Find(where).Count()
+	if nil != err {
+		count = 0
+	}
+	err = connect.Find(where).Select(M{"_id": 0, "passwd": 0}).Skip(skip).Limit(limit).Sort(sort).All(&list)
 	if nil == list {
 		list = make([]map[string]interface{}, 0)
 	}
-	return list, err
+	return list, count, err
 }
 
 //解锁账号（激活）

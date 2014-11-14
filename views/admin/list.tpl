@@ -102,14 +102,12 @@
                     {"bSortable":false},
                     null,
                     {"bSortable":false,}, 
-                    null, 
-                    null, 
-                    null,
+                    {"bSearchable":false}, 
+                    {"bSearchable":false},
+                    {"bSearchable":false},
                     {"bSearchable":false},
                     {"bSortable":false, "bSearchable":false}
                 ];
-            config.bProcessing = false;
-            config.bServerSide = true;
             config.fnServerData = function(sSource, aoData, fnCallback){
                 aoData.push( { "name": "bao2dan", "value": "hahahaha" } );
                 $.ajax( {
@@ -122,130 +120,8 @@
                     success: fnCallback
                 });
             }
-            $('#table_admin_list').dataTable(config);
-        },
-
-        //format admin list(ajax)
-        formatAdminList: function() {
-            var liHtml = "";
-            var liStr = '<tr>\
-                            <td class="center">\
-                                <label>\
-                                    <input type="checkbox" class="ace" />\
-                                    <span class="lbl"></span>\
-                                </label>\
-                            </td>\
-                            <td>{account}</td>\
-                            <td>{role}</td>\
-                            <td class="hidden-480">{email}</td>\
-                            <td class="hidden-480">{create_time}</td>\
-                            <td class="hidden-480">{update_time}</td>\
-                            <td>{login_time}</td>\
-                            <td>\
-                                <span class="label label-sm {status_class}">{status}</span>\
-                            </td>\
-                            <td>\
-                                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">\
-                                    <a class="blue" href="#">\
-                                        <i class="{btn_class} bigger-130"></i>\
-                                    </a>\
-                                    <a class="green" href="#">\
-                                        <i class="icon-pencil bigger-130"></i>\
-                                    </a>\
-                                    <a class="red" href="#">\
-                                        <i class="icon-trash bigger-130"></i>\
-                                    </a>\
-                                </div>\
-                            </td>\
-                        </tr>';
-
-            for (i = 0; i < data.list.length; i++) {
-                var account = data.list[i].account;
-                var role = data.list[i].role;
-                var email = data.list[i].email;
-                var lock = data.list[i].lock;
-                var create_time = data.list[i].create_time;
-                var update_time = data.list[i].update_time;
-                var login_time = data.list[i].login_time;
-                var status = "lock", status_class = "label-warning", btn_class = "icon-lock";
-                if ("0" === lock) {
-                    status = "unlock";
-                    status_class = "label-success";
-                    btn_class = "icon-unlock";
-                }
-                liHtml += liStr.format({account: account, role: role, email: email, status_class: status_class, status: status, btn_class: btn_class, create_time: create_time, update_time: update_time, login_time: login_time});
-            }
-            $('#table_admin_list tbody').html(liHtml);
-
-        },
-
-        //get admin list(ajax)
-        getAdminList2: function() {
-            var liHtml = "";
-            var liStr = '<tr>\
-                            <td class="center">\
-                                <label>\
-                                    <input type="checkbox" class="ace" />\
-                                    <span class="lbl"></span>\
-                                </label>\
-                            </td>\
-                            <td>{account}</td>\
-                            <td>{role}</td>\
-                            <td class="hidden-480">{email}</td>\
-                            <td class="hidden-480">{create_time}</td>\
-                            <td class="hidden-480">{update_time}</td>\
-                            <td>{login_time}</td>\
-                            <td>\
-                                <span class="label label-sm {status_class}">{status}</span>\
-                            </td>\
-                            <td>\
-                                <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">\
-                                    <a class="blue" href="#">\
-                                        <i class="{btn_class} bigger-130"></i>\
-                                    </a>\
-                                    <a class="green" href="#">\
-                                        <i class="icon-pencil bigger-130"></i>\
-                                    </a>\
-                                    <a class="red" href="#">\
-                                        <i class="icon-trash bigger-130"></i>\
-                                    </a>\
-                                </div>\
-                            </td>\
-                        </tr>';
-
-            $.ajax({
-                type: "POST",
-                url: "/admin/list?rand=" + Math.random(),
-                data: {},
-                dataType: "json",
-                cache: false,
-                timeout: 5000,
-                success: function(data) {
-                    if (data.succ) {
-                        for (i = 0; i < data.list.length; i++) {
-                            var account = data.list[i].account;
-                            var role = data.list[i].role;
-                            var email = data.list[i].email;
-                            var lock = data.list[i].lock;
-                            var create_time = data.list[i].create_time;
-                            var update_time = data.list[i].update_time;
-                            var login_time = data.list[i].login_time;
-                            var status = "lock", status_class = "label-warning", btn_class = "icon-lock";
-                            if ("0" === lock) {
-                                status = "unlock";
-                                status_class = "label-success";
-                                btn_class = "icon-unlock";
-                            }
-                            liHtml += liStr.format({account: account, role: role, email: email, status_class: status_class, status: status, btn_class: btn_class, create_time: create_time, update_time: update_time, login_time: login_time});
-                        }
-                        $('#table_admin_list tbody').html(liHtml);
-                        Somi.dataTable();
-                    }
-                },
-                error: function() {
-                    alert("网络连接超时")
-                }
-            });
+            var oTable = $('#table_admin_list').dataTable(config);
+            DataTableSearchBind(oTable);
         }
     }
     $(function() {
