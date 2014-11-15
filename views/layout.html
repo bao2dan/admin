@@ -79,20 +79,20 @@
                         <li class="light-blue">
                             <a data-toggle="dropdown" href="javascript:void(0);" class="dropdown-toggle">
                                 <img class="nav-user-photo" src="/static/images/avatars/user.jpg" alt="Your Photo" />
-                                <span class="user-info"><small>欢迎光临,</small><span id="nav-account">Jason</span></span>
+                                <span class="user-info"><small>欢迎光临,</small><span id="nav-account"></span></span>
                                 <i class="icon-caret-down"></i>
                             </a>
 
                             <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                                 <li>
-                                    <a href="#"><i class="icon-cog"></i>设置</a>
+                                    <a href="/admin/update"><i class="icon-cog"></i>设置</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="icon-user"></i>个人资料</a>
+                                    <a href="/admin/view"><i class="icon-user"></i>个人资料</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="#"><i class="icon-off"></i>退出</a>
+                                    <a href="/site/logout"><i class="icon-off"></i>退出</a>
                                 </li>
                             </ul>
                         </li>
@@ -178,7 +178,7 @@
                                 <i class="icon-home home-icon"></i>
                                 <a href="/">首页</a>
                             </li>
-                            <li class="active">控制台</li>
+                            <li class="active">Somi</li>
                         </ul><!-- .breadcrumb -->
                     </div>
                     
@@ -209,11 +209,11 @@
 
                         <div>
                             <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-navbar" />
-                            <label class="lbl" for="ace-settings-navbar"> 固定导航条</label>
+                            <label class="lbl" for="ace-settings-navbar"> 固定顶部条</label>
                         </div>
                         <div>
                             <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-sidebar" />
-                            <label class="lbl" for="ace-settings-sidebar"> 固定滑动条</label>
+                            <label class="lbl" for="ace-settings-sidebar"> 固定导航栏</label>
                         </div>
                         <div>
                             <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-breadcrumbs" />
@@ -322,6 +322,19 @@ $(function() {
         if(data.succ){
           $('#nav-menu').html(data.menu);
           $('#nav-account').html(data.account);
+
+          //选中处理
+          var pathname = window.location.pathname
+          $('ul#nav-menu li a').each(function(k, v){
+                var href = $(this).attr("href")
+                if (href == pathname){
+                    $(v).parent("li").addClass("active")
+                    var pUlClass = $(v).closest("ul").attr("class")
+                    if(pUlClass.indexOf("submenu") > -1){
+                        $(v).parents('ul[class!="submenu"]>li').addClass("open active")
+                    }
+                }
+          });
         }
       },
       error:function(){

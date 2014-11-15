@@ -1,7 +1,7 @@
 <div class="page-header">
     <h1>
         <small>
-            <i class="icon-double-angle-right"></i>
+            <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
             管理员列表
         </small>
     </h1>
@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-header">
-                    <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+                    <i class="icon-double-angle-right"></i>
                     Results for "Latest Registered Domains"
                 </div>
 

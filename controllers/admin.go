@@ -86,10 +86,17 @@ func (this *AdminController) List() {
 }
 
 func (this *AdminController) Update() {
-	this.Data["Version"] = "1.1"
 	this.Layout = "layout.html"
-	this.TplNames = "index.tpl"
+	this.TplNames = "admin/list.tpl"
 	this.Render()
+	return
+}
+
+func (this *AdminController) Up() {
+	this.Layout = "layout.html"
+	this.TplNames = "admin/list.tpl"
+	this.Render()
+	return
 }
 
 func (this *AdminController) Del() {
