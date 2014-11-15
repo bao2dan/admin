@@ -27,10 +27,16 @@ func main() {
 func loginDeal(ctx *context.Context) {
 	//controller/method
 	url := ctx.Input.Url()
+	isAjax := ctx.Input.IsAjax()
 	account, ok := ctx.Input.Session("account").(string)
+	data := map[string]interface{}{"succ": 0, "msg": "报歉，请重新登陆！"}
 	if !strings.HasPrefix(url, "/site/") {
 		if !ok || "" == account {
-			ctx.Redirect(302, "/site/login")
+			if isAjax {
+				ctx.Output.Json(data, false, false)
+			} else {
+				ctx.Redirect(302, "/site/login")
+			}
 		}
 	} else if strings.HasPrefix(url, "/site/login") {
 		if ok && "" != account {
@@ -43,6 +49,8 @@ func loginDeal(ctx *context.Context) {
 func authDeal(ctx *context.Context) {
 	//controller/method
 	url := ctx.Input.Url()
+	isAjax := ctx.Input.IsAjax()
+	data := map[string]interface{}{"succ": 0, "msg": "报歉，您没有此操作权限！"}
 	if !strings.HasPrefix(url, "/site/") && "/" != url {
 		role, ok := ctx.Input.Session("role").(string)
 		if !ok || "" == role {
@@ -53,7 +61,11 @@ func authDeal(ctx *context.Context) {
 			}
 			ok, err := controllers.IsAuth(role, url)
 			if nil != err || !ok {
-				ctx.Redirect(302, "/site/noauth")
+				if isAjax {
+					ctx.Output.Json(data, false, false)
+				} else {
+					ctx.Redirect(302, "/site/noauth")
+				}
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import (
 	"errors"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 const (
@@ -22,6 +23,11 @@ const (
 
 type (
 	M map[string]interface{}
+)
+
+var (
+	//当前时间
+	nowTime string = time.Now().Format("2006-01-02 15:04:05")
 )
 
 //发送邮件
@@ -79,7 +85,7 @@ func isMatch(s, r string) (result bool) {
 }
 
 //获取表格列表相关数据
-func dateTableCondition(fileds []string, ctx *context.Context) (table M) {
+func dateTableCondition(ctx *context.Context, fileds []string) (table M) {
 	//获取skip和limit
 	iDisplayStart := ctx.Input.Query("iDisplayStart")
 	skip, _ := strconv.Atoi(iDisplayStart)

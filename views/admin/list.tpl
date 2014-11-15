@@ -41,41 +41,6 @@
                         </thead>
 
                         <tbody>
-
-                            <tr style="display:none;">
-                                <td class="center">
-                                    <label>
-                                        <input type="checkbox" class="ace" />
-                                        <span class="lbl"></span>
-                                    </label>
-                                </td>
-
-                                <td>584143515@qq.com</td>
-                                <td>root</td>
-                                <td class="hidden-480">584143515@qq.com</td>
-                                <td class="hidden-480">2014-11-10 12:12:10</td>
-                                <td class="hidden-480">2014-11-11 12:12:20</td>
-                                <td>2014-11-13 14:12:10</td>
-
-                                <td>
-                                    <span class="label label-sm label-warning">lock</span>
-                                </td>
-
-                                <td>
-                                    <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                        <a class="blue" href="#">
-                                            <i class="icon-lock bigger-130"></i>
-                                        </a>
-                                        <a class="green" href="#">
-                                            <i class="icon-pencil bigger-130"></i>
-                                        </a>
-                                        <a class="red" href="#">
-                                            <i class="icon-trash bigger-130"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -117,15 +82,104 @@
                     dataType: "json",
                     cache: false,
                     timeout: 5000,
-                    success: fnCallback
+                    success: function(data) {
+                        fnCallback(data);
+                        Somi.bindOp(); //绑定操作事件
+                    }
                 });
             }
             var oTable = $('#table_admin_list').dataTable(config);
             DataTableSearchBind(oTable);
+        },
+
+        //绑定操作事件
+        bindOp: function(){
+            //锁定、解锁
+            $("#table_admin_list .action-buttons").on("click", ".unLockBtn", function(){
+                var _this = this;
+                var account = $(_this).closest(".action-buttons").attr("account");
+                if (!account) {
+                  alert("参数不能空")
+                  return false;
+                }
+
+                var iClass = $(_this).find("i").attr("class")
+                var op = "lock"
+                var url = "/admin/lock"
+                if(iClass.indexOf("icon-lock") >- 1){
+                    op = "unlock"
+                    url = "/admin/unlock"
+                }
+
+                $.ajax({
+                  type: "POST",
+                  url: url,
+                  data: {"account":account},
+                  dataType: "json",
+                  cache: false,
+                  timeout: 5000,
+                  success:function(data){
+                    if(data.succ){
+                      if(op == "lock"){
+                        $(_this).find("i").removeClass("icon-unlock").addClass("icon-lock");
+                        $(_this).closest("tr").find(".status").removeClass("label-success").addClass("label-warning").html("已锁定");
+                      }else{
+                        $(_this).find("i").removeClass("icon-lock").addClass("icon-unlock");
+                        $(_this).closest("tr").find(".status").removeClass("label-warning").addClass("label-success").html("已激活");
+                      }
+                    }else{
+                      alert(data.msg)
+                    }
+                  },
+                  error:function(){
+                    alert("网络连接超时");
+                  }
+                });
+            });
+
+            //删除账号
+            $("#table_admin_list .action-buttons").on("click", ".delBtn", function(){
+                var _this = this;
+                var account = $(_this).closest(".action-buttons").attr("account");
+                if (!account) {
+                  alert("参数不能空")
+                  return false;
+                }
+                var url = "/admin/del"
+
+                $.ajax({
+                  type: "POST",
+                  url: url,
+                  data: {"account":account},
+                  dataType: "json",
+                  cache: false,
+                  timeout: 5000,
+                  success:function(data){
+                    if(data.succ){
+                      $(_this).closest("tr").remove()
+                    }else{
+                      alert(data.msg)
+                    }
+                  },
+                  error:function(){
+                    alert("网络连接超时");
+                  }
+                });
+            });
+
+            //查看账号信息
+            $("#table_admin_list .action-buttons").on("click", ".updateBtn", function(){
+                var _this = this;
+                var account = $(_this).closest(".action-buttons").attr("account");
+                if (!account) {
+                  alert("参数不能空")
+                  return false;
+                }
+                window.location.href = "/admin/update?account="+account+"&rand="+Math.random()
+            });
         }
     }
     $(function() {
-        //Somi.getAdminList();
         Somi.dataTable();
     });
 </script>

@@ -23,10 +23,9 @@ func init() {
 	beego.Router("/admin/del", &controllers.AdminController{}, "*:Del")
 	beego.Router("/admin/lock", &controllers.AdminController{}, "*:Lock")
 	beego.Router("/admin/unlock", &controllers.AdminController{}, "*:Unlock")
+	beego.Router("/admin/view", &controllers.AdminController{}, "*:View")
 
 	//category
 	beego.Router("/category/list", &controllers.CategoryController{}, "get:List")
 	beego.Router("/category/create", &controllers.CategoryController{}, "*:Create")
-
-	beego.Router("/admin/up", &controllers.AdminController{}, "*:Up")
 }

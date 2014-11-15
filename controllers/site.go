@@ -157,9 +157,6 @@ func (this *SiteController) Login() {
 		return
 	}
 
-	//当前时间
-	nowTime := time.Now().Format("2006-01-02 15:04:05")
-
 	//设置session并返回
 	if role, ok := info["role"]; ok && "" != role {
 		this.SetSession("account", p["account"])
@@ -231,9 +228,6 @@ func (this *SiteController) Register() {
 	dayTimeStr := strconv.FormatInt(dayTime, 10)
 	token := md5Encode(p["account"] + ACCOUNT_SECURITY + dayTimeStr)
 
-	//当前时间
-	nowTime := time.Now().Format("2006-01-02 15:04:05")
-
 	//保存注册信息
 	err = models.InsertAdminInfo(p["account"], p["passwd"], token, nowTime)
 	if nil == err {
@@ -289,11 +283,8 @@ func (this *SiteController) Activate() {
 		return
 	}
 
-	//当前时间
-	nowTime := time.Now().Format("2006-01-02 15:04:05")
-
 	//激活账号
-	err = models.UnlockAdmin(account, nowTime)
+	err = models.AdminUnlock(account, nowTime)
 	if nil == err {
 		this.Redirect("/site/login", 302)
 		return

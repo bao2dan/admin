@@ -13,6 +13,7 @@ type AdminController struct {
 	beego.Controller
 }
 
+//管理员账号列表
 func (this *AdminController) List() {
 	if !this.IsAjax() {
 		this.Layout = "layout.html"
@@ -35,7 +36,7 @@ func (this *AdminController) List() {
 	defer models.MgoCon.Close()
 
 	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "lock", ""}
-	table := dateTableCondition(fileds, this.Ctx)
+	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
 	list, count, err := models.AdminList(table)
@@ -46,15 +47,15 @@ func (this *AdminController) List() {
 		                <input type="checkbox" class="ace" />
 		                <span class="lbl"></span>
 		            </label>`
-		statusHtmlStr := `<span class="label label-sm %s">%s</span>`
-		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-			                <a class="blue" href="#">
+		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
+		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons" account="%s">
+			                <a class="blue unLockBtn" href="javascript:void(0);">
 			                    <i class="%s bigger-130"></i>
 			                </a>
-			                <a class="green" href="#">
+			                <a class="green updateBtn" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
 			                </a>
-			                <a class="red" href="#">
+			                <a class="red delBtn" href="javascript:void(0);">
 			                    <i class="icon-trash bigger-130"></i>
 			                </a>
 			            </div>`
@@ -70,7 +71,7 @@ func (this *AdminController) List() {
 				btnClass = "icon-lock"
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
-			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, btnClass))
+			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], btnClass))
 			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
@@ -85,6 +86,7 @@ func (this *AdminController) List() {
 	return
 }
 
+//修改管理员账号
 func (this *AdminController) Update() {
 	this.Layout = "layout.html"
 	this.TplNames = "admin/list.tpl"
@@ -92,25 +94,138 @@ func (this *AdminController) Update() {
 	return
 }
 
-func (this *AdminController) Up() {
-	this.Layout = "layout.html"
-	this.TplNames = "admin/list.tpl"
-	this.Render()
-	return
-}
-
+//删除管理员账号
 func (this *AdminController) Del() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	account := this.GetString("account")
+	if "" == account {
+		result["msg"] = "参数不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	var err error
+	//连接mongodb
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		this.Data["json"] = err.Error()
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	err = models.AdminDel(account)
+	if nil != err {
+		result["msg"] = err.Error()
+	} else {
+		result["succ"] = 1
+	}
+
+	this.Data["json"] = result
+	this.ServeJson()
 }
 
+//查看管理员账号信息
 func (this *AdminController) View() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	account := this.GetString("account")
+	if "" == account {
+		result["msg"] = "参数不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	var err error
+	//连接mongodb
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		this.Data["json"] = err.Error()
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	err = models.AdminUnlock(account, nowTime)
+	if nil != err {
+		result["msg"] = err.Error()
+	} else {
+		result["succ"] = 1
+	}
+
+	this.Data["json"] = result
+	this.ServeJson()
 }
 
+//锁定管理员账号
 func (this *AdminController) Lock() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	account := this.GetString("account")
+	if "" == account {
+		result["msg"] = "参数不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	var err error
+	//连接mongodb
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		this.Data["json"] = err.Error()
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	err = models.AdminLock(account, nowTime)
+	if nil != err {
+		result["msg"] = err.Error()
+	} else {
+		result["succ"] = 1
+	}
+
+	this.Data["json"] = result
+	this.ServeJson()
 }
 
+//解锁(激活)管理员账号
 func (this *AdminController) Unlock() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	account := this.GetString("account")
+	if "" == account {
+		result["msg"] = "参数不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	var err error
+	//连接mongodb
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		this.Data["json"] = err.Error()
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	err = models.AdminUnlock(account, nowTime)
+	if nil != err {
+		result["msg"] = err.Error()
+	} else {
+		result["succ"] = 1
+	}
+
+	this.Data["json"] = result
+	this.ServeJson()
 }

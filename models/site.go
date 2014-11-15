@@ -53,7 +53,6 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		{"6", "", "活动管理", "<i class='icon-coffee'></i>"},
 		{"7", "", "阿里妈妈", "<i class='icon-laptop'></i>"},
 		{"1", "", "管理员", "<i class='icon-group'></i>"},
-		{"8", "/admin/up", "测试", "<i class='icon-laptop'></i>"},
 	}
 
 	//二级导航栏（正序显示）
@@ -64,7 +63,6 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		"5": {"101", "102"},
 		"6": {"111", "112"},
 		"7": {"121", "122"},
-		"8": {"131"},
 		"1": {"11"},
 	}
 
@@ -122,8 +120,6 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		"124": {"/alimama/del", "删除商品"},
 		"125": {"/alimama/online", "上线商品"},
 		"126": {"/alimama/offline", "下线商品"},
-
-		"131": {"/admin/up", "测试"},
 	}
 
 	return aMenu, bMenu, urlInfo, err
@@ -138,7 +134,6 @@ func GetAuthConfig(role string) (auth []string, err error) {
 			"5:101", "5:102", "5:103", "5:104",
 			"6:111", "6:112", "6:113", "6:114",
 			"7:121", "7:122", "7:123", "7:124", "7:125", "7:126",
-			"8:131",
 		},
 		"guest": {},
 	}
