@@ -1,9 +1,9 @@
 <div class="page-header">
     <h1>
-        <small>
+        
             <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
             管理员列表
-        </small>
+        
     </h1>
 </div><!-- /.page-header -->
 
@@ -14,9 +14,9 @@
 
         <div class="row">
             <div class="col-xs-12">
-                <div class="table-header">
-                    <i class="icon-double-angle-right"></i>
-                    Results for "Latest Registered Domains"
+                <div class="table-header orange">
+                    <i class="icon-exclamation-sign"></i>
+                    请谨慎操作此列表中的功能
                 </div>
 
                 <div class="table-responsive">
@@ -52,9 +52,6 @@
     </div>
 </div><!-- /.row -->
 
-<!-- page specific plugin scripts -->
-<script src="/static/js/base/jquery.dataTables.min.js"></script>
-<script src="/static/js/base/jquery.dataTables.bootstrap.js"></script>
 
 <script type="text/javascript">
     var Somi = {
@@ -111,29 +108,33 @@
                     url = "/admin/unlock"
                 }
 
-                $.ajax({
-                  type: "POST",
-                  url: url,
-                  data: {"account":account},
-                  dataType: "json",
-                  cache: false,
-                  timeout: 5000,
-                  success:function(data){
-                    if(data.succ){
-                      if(op == "lock"){
-                        $(_this).find("i").removeClass("icon-unlock").addClass("icon-lock");
-                        $(_this).closest("tr").find(".status").removeClass("label-success").addClass("label-warning").html("已锁定");
-                      }else{
-                        $(_this).find("i").removeClass("icon-lock").addClass("icon-unlock");
-                        $(_this).closest("tr").find(".status").removeClass("label-warning").addClass("label-success").html("已激活");
-                      }
-                    }else{
-                      alert(data.msg)
+                bootbox.confirm("您确定要操作吗?", function(result) {
+                    if(result) {
+                        $.ajax({
+                          type: "POST",
+                          url: url,
+                          data: {"account":account},
+                          dataType: "json",
+                          cache: false,
+                          timeout: 5000,
+                          success:function(data){
+                            if(data.succ){
+                              if(op == "lock"){
+                                $(_this).find("i").removeClass("icon-unlock").addClass("icon-lock");
+                                $(_this).closest("tr").find(".status").removeClass("label-success").addClass("label-warning").html("已锁定");
+                              }else{
+                                $(_this).find("i").removeClass("icon-lock").addClass("icon-unlock");
+                                $(_this).closest("tr").find(".status").removeClass("label-warning").addClass("label-success").html("已激活");
+                              }
+                            }else{
+                              alert(data.msg);
+                            }
+                          },
+                          error:function(){
+                            alert("网络连接超时");
+                          }
+                        });
                     }
-                  },
-                  error:function(){
-                    alert("网络连接超时");
-                  }
                 });
             });
 
@@ -147,23 +148,27 @@
                 }
                 var url = "/admin/del"
 
-                $.ajax({
-                  type: "POST",
-                  url: url,
-                  data: {"account":account},
-                  dataType: "json",
-                  cache: false,
-                  timeout: 5000,
-                  success:function(data){
-                    if(data.succ){
-                      $(_this).closest("tr").remove()
-                    }else{
-                      alert(data.msg)
+                bootbox.confirm("您确定要删除吗?", function(result) {
+                    if(result) {
+                        $.ajax({
+                          type: "POST",
+                          url: url,
+                          data: {"account":account},
+                          dataType: "json",
+                          cache: false,
+                          timeout: 5000,
+                          success:function(data){
+                            if(data.succ){
+                              $(_this).closest("tr").remove();
+                            }else{
+                              alert(data.msg);
+                            }
+                          },
+                          error:function(){
+                            alert("网络连接超时");
+                          }
+                        });
                     }
-                  },
-                  error:function(){
-                    alert("网络连接超时");
-                  }
                 });
             });
 
@@ -172,10 +177,10 @@
                 var _this = this;
                 var account = $(_this).closest(".action-buttons").attr("account");
                 if (!account) {
-                  alert("参数不能空")
+                  alert("参数不能空");
                   return false;
                 }
-                window.location.href = "/admin/update?account="+account+"&rand="+Math.random()
+                window.location.href = "/admin/update?account="+account+"&rand="+Math.random();
             });
         }
     }

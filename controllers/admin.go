@@ -49,13 +49,13 @@ func (this *AdminController) List() {
 		            </label>`
 		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
 		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons" account="%s">
-			                <a class="blue unLockBtn" href="javascript:void(0);">
+			                <a class="blue unLockBtn" title="%s" href="javascript:void(0);">
 			                    <i class="%s bigger-130"></i>
 			                </a>
-			                <a class="green updateBtn" href="javascript:void(0);">
+			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
 			                </a>
-			                <a class="red delBtn" href="javascript:void(0);">
+			                <a class="red delBtn" title="删除" href="javascript:void(0);">
 			                    <i class="icon-trash bigger-130"></i>
 			                </a>
 			            </div>`
@@ -63,15 +63,17 @@ func (this *AdminController) List() {
 		for _, row := range list {
 			lock, _ := row["lock"]
 			status := "已激活"
+			title := "锁定"
 			statusClass := "label-success"
 			btnClass := "icon-unlock"
 			if "1" == lock {
 				status = "已锁定"
+				title = "解锁"
 				statusClass = "label-warning"
 				btnClass = "icon-lock"
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
-			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], btnClass))
+			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
 			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}

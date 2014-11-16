@@ -1,31 +1,25 @@
 package models
 
 import (
-	"fmt"
 	"reflect"
 )
 
 //获取管理员账号列表
 func AdminList(table map[string]interface{}) (list []map[string]interface{}, count int, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	sWhere, _ := table["sWhere"].(map[string]interface{})
+	sWhere, _ := table["sWhere"]
 	skip, _ := table["iDisplayStart"].(int)
 	limit, _ := table["iDisplayLength"].(int)
 	sort, _ := table["sSort"].(string)
 
 	where := M{}
-	fmt.Println(sWhere)
-
-	s := reflect.ValueOf(sWhere)
-	for i := 0; i < reflect.TypeOf(sWhere).NumField(); i++ {
-		fmt.Println(reflect.TypeOf(sWhere)[i])
+	rv := reflect.ValueOf(sWhere)
+	rk := rv.MapKeys()
+	for i := 0; i < len(rk); i++ {
+		key := rk[i].String()
+		where[key] = rv.MapIndex(rk[i]).Interface()
 	}
-
-	//sWhere["role"] = M{"$ne": "root"}
-	fmt.Println("=============\n")
-	//fmt.Println(sWhere)
-
-	fmt.Println("=============\n")
+	where["role"] = M{"$ne": "root"}
 
 	count, err = connect.Find(where).Count()
 	if nil != err {
