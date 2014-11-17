@@ -1,9 +1,9 @@
 <div class="page-header">
     <h1>
-        
+        <small>
             <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
             管理员列表
-        
+        </small>
     </h1>
 </div><!-- /.page-header -->
 

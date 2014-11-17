@@ -91,7 +91,7 @@ func (this *AdminController) List() {
 //修改管理员账号
 func (this *AdminController) Update() {
 	this.Layout = "layout.html"
-	this.TplNames = "admin/list.tpl"
+	this.TplNames = "admin/update.tpl"
 	this.Render()
 	return
 }
