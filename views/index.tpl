@@ -11,9 +11,9 @@
     <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
 
-        <p class="lead">欢迎光临，请谨慎操作每一步！</p>
+        <p class="lead">欢迎光临，请您谨慎操作每一步！</p>
 
-        <p class="lead">你好，我好，大家好才真的好！</p>
+        <p class="lead">你好，我好，大家好才是真的好！</p>
         
         <!-- PAGE CONTENT ENDS -->
     </div>

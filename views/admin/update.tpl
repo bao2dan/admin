@@ -9,39 +9,79 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <!-- PAGE CONTENT BEGINS -->
+    <!-- PAGE CONTENT BEGINS -->
 
 
-          <form role="form">
+        <form class="form-horizontal" role="form">
             <div class="form-group">
-              <label for="exampleInputEmail1">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+              <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
+
+              <div class="col-sm-9">
+                <input type="text" id="account"  placeholder="这里显示您的账号" class="col-xs-10 col-sm-5" readonly />
+              </div>
             </div>
+
+            <div class="space-4"></div>
+
             <div class="form-group">
-              <label for="exampleInputPassword1">Password</label>
-              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              <label class="col-sm-3 control-label no-padding-right" for="passwd"> 密码 </label>
+
+              <div class="col-sm-9">
+                <input type="password" id="passwd" placeholder="请输入密码" class="col-xs-10 col-sm-5" />
+                <span class="help-inline col-xs-12 col-sm-7">
+                  <span class="middle">Inline help text</span>
+                </span>
+              </div>
             </div>
+
+            <div class="space-4"></div>
+
             <div class="form-group">
-              <label for="exampleInputFile">File input</label>
-              <input type="file" id="exampleInputFile">
-              <p class="help-block">Example block-level help text here.</p>
+              <label class="col-sm-3 control-label no-padding-right" for="role"> 权限 </label>
+              <div class="col-sm-9">
+                <select class="col-xs-10 col-sm-5" id="role" data-placeholder="请选择权限">
+                  <option value="guest">游客</option>
+                  <option value="admin1">一级管理员</option>
+                  <option value="admin2">二级管理员</option>
+                </select>
+              </div>
             </div>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox"> Check me out
-              </label>
+
+
+
+            <div class="clearfix form-actions">
+              <div class="col-md-offset-3 col-md-9">
+                <button class="btn btn-sm btn-success" type="button">
+                  <i class="icon-ok bigger-110"></i>
+                  确定
+                </button>
+
+                &nbsp; &nbsp; &nbsp;
+                <button class="btn btn-sm" type="button">
+                  <i class="icon-undo bigger-110"></i>
+                  取消
+                </button>
+              </div>
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
           </form>
 
 
-        <!-- PAGE CONTENT ENDS -->
+    <!-- PAGE CONTENT ENDS -->
     </div>
 </div><!-- /.row -->
 
 
 <script type="text/javascript">
 $(function() {
+    //下拉框样式初始化
+    $("select").chosen()
+    .next('.chosen-container').each(function(){
+      $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
+      $(this).find('.chosen-drop').css({});
+      $(this).find('.chosen-search input').css({});
+    });
+
+
     //锁定、解锁
     $("#table_admin_list .action-buttons").on("click", ".unLockBtn", function(){
         var _this = this;

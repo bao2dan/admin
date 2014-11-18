@@ -49,11 +49,11 @@ func (this *AdminController) List() {
 		            </label>`
 		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
 		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons" account="%s">
-			                <a class="blue unLockBtn" title="%s" href="javascript:void(0);">
-			                    <i class="%s bigger-130"></i>
-			                </a>
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
+			                </a>
+			                <a class="blue unLockBtn" title="%s" href="javascript:void(0);">
+			                    <i class="%s bigger-130"></i>
 			                </a>
 			                <a class="red delBtn" title="删除" href="javascript:void(0);">
 			                    <i class="icon-trash bigger-130"></i>

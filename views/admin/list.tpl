@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <!-- PAGE CONTENT BEGINS -->
+    <!-- PAGE CONTENT BEGINS -->
 
 
         <div class="row">
@@ -48,7 +48,7 @@
         </div>
 
 
-        <!-- PAGE CONTENT ENDS -->
+    <!-- PAGE CONTENT ENDS -->
     </div>
 </div><!-- /.row -->
 
