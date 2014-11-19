@@ -1,7 +1,7 @@
 package models
 
 import (
-	"errors"
+	"strings"
 )
 
 //获取账号[登陆用]
@@ -94,10 +94,10 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		"53": {"/region/update", "编辑地区"},
 		"54": {"/region/del", "删除地区"},
 
-		"61": {"/category/list", "类型列表"},
-		"62": {"/category/add", "新建类型"},
-		"63": {"/category/update", "编辑类型"},
-		"64": {"/category/del", "删除类型"},
+		"61": {"/category/list", "分类列表"},
+		"62": {"/category/add", "新建分类"},
+		"63": {"/category/update", "编辑分类"},
+		"64": {"/category/del", "删除分类"},
 
 		"71": {"/monitor/server", "服务器"},
 		"72": {"/monitor/db", "数据库"},
@@ -137,10 +137,10 @@ func GetAuthConfig(role string) (auth []string, err error) {
 		},
 		"guest": {},
 	}
-	if v, ok := auths[role]; ok {
-		auth = v
-	} else {
-		err = errors.New("没有此角色")
+	for _, roleName := range strings.Split(role, ",") {
+		if v, ok := auths[roleName]; ok {
+			auth = append(auth, v...)
+		}
 	}
 	return auth, err
 }
