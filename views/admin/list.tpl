@@ -54,7 +54,7 @@
 
 
 <script type="text/javascript">
-    var Somi = {
+    var Obj = {
         //data table
         dataTable: function() {
             var config = DataTableConfig;
@@ -81,12 +81,12 @@
                     timeout: 5000,
                     success: function(data) {
                         fnCallback(data);
-                        Somi.bindOp(); //绑定操作事件
+                        Obj.bindOp(); //绑定操作事件
                     }
                 });
             }
             var oTable = $('#table_admin_list').dataTable(config);
-            DataTableSearchBind(oTable);
+            Somi.dataTableSearchBind(oTable);
         },
 
         //绑定操作事件
@@ -185,6 +185,6 @@
         }
     }
     $(function() {
-        Somi.dataTable();
+        Obj.dataTable();
     });
 </script>

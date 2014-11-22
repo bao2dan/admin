@@ -56,7 +56,6 @@
         <script src="/static/js/base/jquery.easy-pie-chart.min.js"></script>
         <script src="/static/js/base/jquery.gritter.min.js"></script>
         <script src="/static/js/base/chosen.jquery.min.js"></script>
-        <script src="/static/js/base/spin.min.js"></script>
 
 
         
@@ -302,18 +301,57 @@ var DataTableConfig = {
     },
 };
 
-//data table search enter key
-function DataTableSearchBind(oTable){
-    var filter = $("div.dataTables_filter");
-    if (filter.length) {
-        filter.find("input").unbind();
-        filter.find("input").bind("keyup", function(e){
-            if (e.keyCode == 13) {
-                oTable.fnFilter(this.value);
+
+var Somi = {
+    //data table search enter key
+    dataTableSearchBind: function(oTable){
+        var filter = $("div.dataTables_filter");
+        if (filter.length) {
+            filter.find("input").unbind();
+            filter.find("input").bind("keyup", function(e){
+                if (e.keyCode == 13) {
+                    oTable.fnFilter(this.value);
+                }
+            });
+        }
+    },
+
+    //邮箱检查
+    isEmail: function(email){
+        var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
+        return reg.test(email);
+    },
+
+    //密码检查
+    isPasswd: function(passwd){
+        var reg = /^[A-Za-z0-9_]+$/
+        return reg.test(passwd);
+    },
+
+    //手机号检查
+    isPhone: function(phone){
+        var reg = /^1\d{10}$/
+        return reg.test(phone);
+    },
+
+    //ajax 事件
+    ajax: function(url, data, func){
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            dataType: 'json',
+            cache: false,
+            timeout: 5000,
+            success: func,
+            error:function(){
+              alert("网络连接超时");
             }
         });
     }
 }
+
+
 
 //It run since page loading is complete
 $(function() {
@@ -328,14 +366,7 @@ $(function() {
     });
 
     //get site info(menu, account)
-    $.ajax({
-      type: "POST",
-      url: "/site/menu",
-      data: {},
-      dataType: "json",
-      cache: false,
-      timeout: 5000,
-      success:function(data){
+    Somi.ajax("/site/menu", {}, function(data){
         if(data.succ){
           $('#nav-menu').html(data.menu);
           $('#nav-account').html(data.account);
@@ -353,10 +384,6 @@ $(function() {
                 }
           });
         }
-      },
-      error:function(){
-        alert("网络连接超时")
-      }
     });
 });
 </script>

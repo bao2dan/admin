@@ -90,10 +90,30 @@ func (this *AdminController) List() {
 
 //修改管理员账号
 func (this *AdminController) Update() {
-	this.Layout = "layout.html"
-	this.TplNames = "admin/update.tpl"
-	this.Render()
+	if !this.IsAjax() {
+		this.Layout = "layout.html"
+		this.TplNames = "admin/update.tpl"
+		this.Render()
+		return
+	}
+
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	//获取参数并校验
+	account := this.GetString("account")
+	if "" == account {
+		result["msg"] = "账号不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	result["succ"] = 1
+	this.Data["json"] = result
+	this.ServeJson()
 	return
+
 }
 
 //删除管理员账号
