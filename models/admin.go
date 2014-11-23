@@ -33,6 +33,20 @@ func AdminList(table map[string]interface{}) (list []map[string]interface{}, cou
 	return list, count, err
 }
 
+//修改管理员信息
+func AdminUpdate(account, passwd, name, phone, email, sex, role, nowTime string) (err error) {
+	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
+	set := M{"name": name, "phone": phone, "email": email, "sex": sex, "update_time": nowTime}
+	if "" != passwd {
+		set["passwd"] = passwd
+	}
+	if "" != role {
+		set["role"] = role
+	}
+	err = connect.Update(M{"account": account}, M{"$set": set})
+	return err
+}
+
 //解锁(激活)管理员账号
 func AdminUnlock(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)

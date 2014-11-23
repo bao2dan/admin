@@ -18,6 +18,7 @@ const (
 	PASSWD_SECURITY  string = "somi_admin_passwd_token"                                                 //密码安全码，密码加密入库
 	EMAILREG         string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$` //email正则
 	PASSWDREG        string = `^[A-Za-z0-9_]+$`                                                         //设置的密码的正则
+	PHONEREG         string = `^1\d{10}$`                                                               //手机号正则
 	MGO_CONF         string = "mgour"                                                                   //somi mongo连接串的配置名
 )
 
@@ -36,7 +37,7 @@ var (
 //body string 邮件内容
 //isHtml bool 邮件内容是否是html
 func sendEmail(mailto, subject, body string, isHtml bool) (err error) {
-	if !isMatch(mailto, EMAILREG) {
+	if !isEmail(mailto) {
 		err = errors.New("mailto not is email")
 		return err
 	}
@@ -75,11 +76,23 @@ func md5Encode(s string) string {
 	return s
 }
 
-//判断是否与正则匹配
-//param s string  要判断的字符串
-//param r string  正则
-func isMatch(s, r string) (result bool) {
-	reg := regexp.MustCompile(r)
+//判断邮箱的格式是否正确
+func isEmail(s string) (result bool) {
+	reg := regexp.MustCompile(EMAILREG)
+	result = reg.MatchString(s)
+	return result
+}
+
+//判断手机号码的格式是否正确
+func isPhone(s string) (result bool) {
+	reg := regexp.MustCompile(PHONEREG)
+	result = reg.MatchString(s)
+	return result
+}
+
+//判断密码的格式是否正确
+func isPasswd(s string) (result bool) {
+	reg := regexp.MustCompile(PASSWDREG)
 	result = reg.MatchString(s)
 	return result
 }

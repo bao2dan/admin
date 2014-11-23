@@ -7,6 +7,7 @@ import (
 
 	"fmt"
 	"html/template"
+	"strings"
 )
 
 type AdminController struct {
@@ -90,20 +91,82 @@ func (this *AdminController) List() {
 
 //修改管理员账号
 func (this *AdminController) Update() {
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	account := this.GetString("account")
+	isAdmin := true
+	if "" == account {
+		isAdmin = false
+		account, _ = this.GetSession("account").(string)
+	}
+
+	//连接mongodb
+	var err error
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		result["msg"] = err.Error()
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	//获取管理员信息
+	info, err := models.GetAdminInfo(account)
+	if nil != err {
+		result["msg"] = err.Error()
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
 	if !this.IsAjax() {
+		this.Data["IsAdmin"] = isAdmin
+		this.Data["Role"] = strings.Split(info["role"], ",")
+		this.Data["Info"] = info
 		this.Layout = "layout.html"
 		this.TplNames = "admin/update.tpl"
 		this.Render()
 		return
 	}
 
-	//result map
-	result := map[string]interface{}{"succ": 0, "msg": ""}
-
 	//获取参数并校验
-	account := this.GetString("account")
-	if "" == account {
-		result["msg"] = "账号不能为空"
+	passwd := this.GetString("passwd")
+	name := this.GetString("name")
+	phone := this.GetString("phone")
+	email := this.GetString("email")
+	sex := this.GetString("sex")
+	role := this.GetString("role")
+
+	hasErr := false
+	if "" == account || !isEmail(account) {
+		result["msg"] = "账号有误"
+		hasErr = true
+	}
+
+	if "" != passwd && !isPasswd(passwd) {
+		result["msg"] = "密码有误"
+		hasErr = true
+	}
+
+	if "" == name || len(name) < 2 || len(name) > 12 {
+		result["msg"] = "姓名有误"
+		hasErr = true
+	}
+
+	if "" == phone || !isPhone(phone) {
+		result["msg"] = "手机号码有误"
+		hasErr = true
+	}
+
+	if "" != passwd {
+		//md5 加密
+		passwd = md5Encode(passwd + PASSWD_SECURITY)
+	}
+
+	err = models.AdminUpdate(account, passwd, name, phone, email, sex, role, nowTime)
+
+	if hasErr {
 		this.Data["json"] = result
 		this.ServeJson()
 		return
@@ -155,33 +218,33 @@ func (this *AdminController) View() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
-	account := this.GetString("account")
-	if "" == account {
-		result["msg"] = "参数不能为空"
-		this.Data["json"] = result
-		this.ServeJson()
-		return
-	}
+	account, _ := this.GetSession("account").(string)
 
-	var err error
 	//连接mongodb
+	var err error
 	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
 	if nil != err {
-		this.Data["json"] = err.Error()
+		result["msg"] = err.Error()
+		this.Data["json"] = result
 		this.ServeJson()
 		return
 	}
 	defer models.MgoCon.Close()
 
-	err = models.AdminUnlock(account, nowTime)
+	//获取管理员信息
+	info, err := models.GetAdminInfo(account)
 	if nil != err {
 		result["msg"] = err.Error()
-	} else {
-		result["succ"] = 1
+		this.Data["json"] = result
+		this.ServeJson()
+		return
 	}
 
-	this.Data["json"] = result
-	this.ServeJson()
+	this.Data["Role"] = strings.Split(info["role"], ",")
+	this.Data["Info"] = info
+	this.Layout = "layout.html"
+	this.TplNames = "admin/view.tpl"
+	this.Render()
 }
 
 //锁定管理员账号

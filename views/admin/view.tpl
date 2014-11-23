@@ -2,7 +2,7 @@
     <h1>
         <small>
             <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
-            编辑管理员信息
+            个人资料
         </small>
     </h1>
 </div><!-- /.page-header -->
@@ -16,15 +16,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
               <div class="col-sm-9">
-                <input type="text" id="account" value="[[.Info.account]]" placeholder="这里显示的是账号" class="col-xs-10 col-sm-5" readonly />
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right" for="passwd"> 密码 </label>
-              <div class="col-sm-9">
-                <input type="password" id="passwd" value="" placeholder="若不修改，则必须为空" class="col-xs-10 col-sm-5" />
+                <label>[[.Info.account]]</label>
               </div>
             </div>
 
@@ -32,7 +24,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
               <div class="col-sm-9">
-                <input type="text" id="name" value="[[.Info.name]]" placeholder="请输入姓名" class="col-xs-10 col-sm-5" />
+                <label>[[.Info.name]]</label>
               </div>
             </div>
 
@@ -40,7 +32,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
               <div class="col-sm-9">
-                <input type="text" id="phone" value="[[.Info.phone]]" placeholder="请输入手机号码" class="col-xs-10 col-sm-5" />
+                <label>[[.Info.phone]]</label>
               </div>
             </div>
 
@@ -48,7 +40,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
               <div class="col-sm-9">
-                <input type="text" id="email" value="[[.Info.email]]" placeholder="请输入邮箱" class="col-xs-10 col-sm-5" />
+                <label>[[.Info.email]]</label>
               </div>
             </div>
 
@@ -57,72 +49,42 @@
               <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
               <div class="col-sm-9">
                   <label>
-                    <input name="sex" value="1" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "1"]] checked [[end]][[end]] />
-                    <span class="lbl">男</span>
-                  </label>
-                  <label>
-                    <input name="sex" value="0" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "0"]] checked [[end]][[end]] />
-                    <span class="lbl">女</span>
+                    [[if .Info.sex]]
+                        [[if eq .Info.sex "1"]]
+                          <span class="lbl">男</span>
+                        [[else]]
+                          <span class="lbl">女</span>
+                        [[end]]
+                    [[else]]
+                        <span class="lbl">未知</span>
+                    [[end]]
                   </label>
               </div>
             </div>
 
-            [[if .IsAdmin]]
             <div class="space-4"></div>
             <div class="form-group">
               <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
               <div class="col-sm-9">
                   <label>
-                    <input name="role" value="admin1" [[range $k,$v := .Role]][[if eq $v "admin1"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                    <span class="lbl">一级管理员</span>
-                  </label>
-                  <label>
-                    <input name="role" value="admin2" [[range $k,$v := .Role]][[if eq $v "admin2"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                    <span class="lbl">二级管理员</span>
-                  </label>
-                  <label>
-                    <input name="role" value="guest" [[range $k,$v := .Role]][[if eq $v "guest"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                    <span class="lbl">游客</span>
+                    [[range $k,$v := .Role]]
+                        [[if eq $v "root"]] 
+                            <span class="lbl">超级管理员 </span>
+                        [[end]]
+                        [[if eq $v "admin1"]] 
+                            <span class="lbl">一级管理员 </span>
+                        [[end]]
+                        [[if eq $v "admin1"]] 
+                            <span class="lbl">二级管理员 </span>
+                        [[end]]
+                        [[if eq $v "admin1"]] 
+                            <span class="lbl">游客</span>
+                        [[end]]
+                    [[end]]
                   </label>
                 </div>
             </div>
-            [[end]]
 
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right"></label>
-              <div class="col-sm-9">
-                <span class="text-danger" id="errorMsg">&nbsp;</span>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group" style="display:none;">
-              <label class="col-sm-3 control-label no-padding-right" for="role_bak"> 权限 </label>
-              <div class="col-sm-9">
-                <select class="col-xs-10 col-sm-5" id="role_bak" data-placeholder="请选择权限">
-                  <option value="guest">游客</option>
-                  <option value="admin1">一级管理员</option>
-                  <option value="admin2">二级管理员</option>
-                </select>
-              </div>
-            </div>
-
-
-            <div class="clearfix form-actions">
-              <div class="col-md-offset-3 col-md-9">
-                <button class="btn btn-sm btn-success" id="submit" type="button">
-                  <i class="icon-ok bigger-110"></i>
-                  确定
-                </button>
-
-                &nbsp; &nbsp; &nbsp;
-                <button class="btn btn-sm" id="cancel" type="button">
-                  <i class="icon-undo bigger-110"></i>
-                  取消
-                </button>
-              </div>
-            </div>
           </form>
 
 

@@ -320,12 +320,10 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 	//获取并校验参数
 	account := this.GetString("account")
 	passwd := this.GetString("passwd")
-	isEmail := isMatch(account, EMAILREG)
-	isPasswd := isMatch(passwd, PASSWDREG)
-	if "" == account || !isEmail || "" == passwd {
+	if "" == account || !isEmail(account) || "" == passwd {
 		return p, errors.New("账号或密码错误")
 	}
-	if !isPasswd {
+	if !isPasswd(passwd) {
 		return p, errors.New("密码必须为字母、数字、下划线")
 	}
 	if len(passwd) < 8 {

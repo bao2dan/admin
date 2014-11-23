@@ -1,6 +1,8 @@
 package models
 
 import (
+	"github.com/astaxie/beego/utils"
+
 	"strings"
 )
 
@@ -31,7 +33,7 @@ func GetNotActivateAdmin(account string) (info map[string]string, err error) {
 //新增账号信息
 func InsertAdminInfo(account, passwd, token, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Insert(M{"account": account, "passwd": passwd, "role": "guest", "email": account, "lock": "1", "token": token, "login_time": nowTime, "update_time": nowTime, "create_time": nowTime})
+	err = connect.Insert(M{"account": account, "lock": "1", "token": token, "passwd": passwd, "role": "guest", "name": "", "phone": "", "email": account, "sex": "0", "login_time": nowTime, "update_time": nowTime, "create_time": nowTime})
 	return err
 }
 
@@ -73,6 +75,7 @@ func GetMenuConfig() (aMenu [][]string, bMenu map[string][]string, urlInfo map[s
 		"13": {"/admin/del", "删除管理员"},
 		"14": {"/admin/lock", "锁定管理员"},
 		"15": {"/admin/unlock", "解锁管理员"},
+		"16": {"/admin/view", "查看管理员"},
 
 		"21": {"/country/list", "国家列表"},
 		"22": {"/country/add", "新建国家"},
@@ -130,16 +133,27 @@ func GetAuthConfig(role string) (auth []string, err error) {
 	//权限分配
 	auths := map[string][]string{
 		"admin1": {
+			"1:12", "1:16",
 			"2:61", "2:62", "2:63", "2:64",
 			"5:101", "5:102", "5:103", "5:104",
 			"6:111", "6:112", "6:113", "6:114",
 			"7:121", "7:122", "7:123", "7:124", "7:125", "7:126",
 		},
-		"guest": {},
+		"admin2": {
+			"1:12", "1:16",
+			"7:121", "7:122", "7:123", "7:124", "7:125", "7:126",
+		},
+		"guest": {
+			"1:12", "1:16",
+		},
 	}
 	for _, roleName := range strings.Split(role, ",") {
 		if v, ok := auths[roleName]; ok {
-			auth = append(auth, v...)
+			for _, nbid := range v {
+				if !utils.InSlice(nbid, auth) {
+					auth = append(auth, nbid)
+				}
+			}
 		}
 	}
 	return auth, err

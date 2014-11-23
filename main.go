@@ -29,7 +29,7 @@ func loginDeal(ctx *context.Context) {
 	url := ctx.Input.Url()
 	isAjax := ctx.Input.IsAjax()
 	account, ok := ctx.Input.Session("account").(string)
-	data := map[string]interface{}{"succ": 0, "msg": "报歉，请重新登陆！"}
+	data := map[string]interface{}{"succ": 0, "msg": "报歉，请重新登陆"}
 	if !strings.HasPrefix(url, "/site/") {
 		if !ok || "" == account {
 			if isAjax {
@@ -40,7 +40,12 @@ func loginDeal(ctx *context.Context) {
 		}
 	} else if strings.HasPrefix(url, "/site/login") {
 		if ok && "" != account {
-			ctx.Redirect(302, "/")
+			if isAjax {
+				data["msg"] = "不能重复登陆"
+				ctx.Output.Json(data, false, false)
+			} else {
+				ctx.Redirect(302, "/")
+			}
 		}
 	}
 }
