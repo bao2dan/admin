@@ -94,11 +94,22 @@ func (this *AdminController) Update() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
+	//获取账号和角色
 	account := this.GetString("account")
-	isAdmin := true
-	if "" == account {
-		isAdmin = false
-		account, _ = this.GetSession("account").(string)
+	myaccount, _ := this.GetSession("account").(string)
+	isAdmin := false
+	if "" != account && account != myaccount {
+		isAdmin = true
+		//只能是超级管理员才能编辑其他管理员
+		myrole, _ := this.GetSession("role").(string)
+		if "root" != myrole {
+			result["msg"] = "无权编辑其他管理员"
+			this.Data["json"] = result
+			this.ServeJson()
+			return
+		}
+	} else {
+		account = myaccount
 	}
 
 	//连接mongodb
@@ -120,6 +131,7 @@ func (this *AdminController) Update() {
 		this.ServeJson()
 		return
 	}
+
 	if !this.IsAjax() {
 		this.Data["IsAdmin"] = isAdmin
 		this.Data["Role"] = strings.Split(info["role"], ",")
@@ -187,6 +199,15 @@ func (this *AdminController) Del() {
 	account := this.GetString("account")
 	if "" == account {
 		result["msg"] = "参数不能为空"
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	//只能是超级管理员才能编辑其他管理员
+	myrole, _ := this.GetSession("role").(string)
+	if "root" != myrole {
+		result["msg"] = "无权删除其他管理员"
 		this.Data["json"] = result
 		this.ServeJson()
 		return

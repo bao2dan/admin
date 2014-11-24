@@ -74,10 +74,10 @@
                         [[if eq $v "admin1"]] 
                             <span class="lbl">一级管理员 </span>
                         [[end]]
-                        [[if eq $v "admin1"]] 
+                        [[if eq $v "admin2"]] 
                             <span class="lbl">二级管理员 </span>
                         [[end]]
-                        [[if eq $v "admin1"]] 
+                        [[if eq $v "guest"]] 
                             <span class="lbl">游客</span>
                         [[end]]
                     [[end]]

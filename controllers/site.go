@@ -75,13 +75,12 @@ func (this *SiteController) Menu() {
 	//子跳转链接的[是downHtml的子li]
 	sonHrefHtml := `<li><a href="%s"><i class="icon-double-angle-right"></i><span class="menu-text"> %s </span></a></li>`
 
-	//如果有权限，则返回二级导航ID
+	//进行一、二级导航的权限判断，并返回有权限的一、二级导航字符串
 	var getAuthId = func(role, naid, nahref, naname, naimg string, bMenu map[string][]string, auth []string) (strHtml string) {
 		downli := ""
 		if nb, ok := bMenu[naid]; ok {
 			for _, nbid := range nb {
-				authstr := naid + ":" + nbid
-				if utils.InSlice(authstr, auth) || "root" == role {
+				if utils.InSlice(nbid, auth) || "root" == role {
 					if "" != nahref {
 						strHtml += fmt.Sprintf(hrefHtml, nahref, naimg, naname)
 						break
@@ -343,7 +342,7 @@ func (this *SiteController) getParams() (p map[string]string, err error) {
 //判断是否有权限
 func IsAuth(role, url string) (has bool, err error) {
 	//获取导航配置
-	_, bMenu, urlInfo, erra := models.GetMenuConfig()
+	_, _, urlInfo, erra := models.GetMenuConfig()
 	if nil != erra {
 		return has, errors.New("获取导航配置失败")
 	}
@@ -357,13 +356,8 @@ func IsAuth(role, url string) (has bool, err error) {
 	//循环判断
 	for nbid, nbinfo := range urlInfo {
 		if url == nbinfo[0] {
-			for naid, nb := range bMenu {
-				if utils.InSlice(nbid, nb) {
-					authstr := naid + ":" + nbid
-					if utils.InSlice(authstr, auth) {
-						return true, err
-					}
-				}
+			if utils.InSlice(nbid, auth) {
+				return true, err
 			}
 		}
 	}

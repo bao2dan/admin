@@ -143,7 +143,7 @@ $(function() {
 
     //取消
     $("#formBox").on("click", "#cancel", function(){
-        location.href = "/";
+        location.href = "/admin/list";
     });
 
     //提交
