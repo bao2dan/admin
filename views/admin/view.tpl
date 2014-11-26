@@ -1,96 +1,125 @@
-<div class="page-header">
-    <h1>
-        <small>
-            <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
-            个人资料
-        </small>
-    </h1>
-</div><!-- /.page-header -->
+<div class="breadcrumbs" id="breadcrumbs">
+    <script type="text/javascript">
+        try {ace.settings.check('breadcrumbs', 'fixed');} catch (e) {}
+    </script>
+    <ul class="breadcrumb">
+        <li>
+            <i class="icon-home home-icon"></i>管理员
+        </li>
+        <li class="active">个人资料</li>
+    </ul><!-- .breadcrumb -->
+</div><!-- .breadcrumbs -->
 
-<div class="row">
-    <div class="col-xs-12">
-    <!-- PAGE CONTENT BEGINS -->
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            <small>
+                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+                个人资料
+            </small>
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+        <!-- PAGE CONTENT BEGINS -->
 
 
-        <form class="form-horizontal" id="formBox" role="form">
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
-              <div class="col-sm-9">
-                <label>[[.Info.account]]</label>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
-              <div class="col-sm-9">
-                <label>[[.Info.name]]</label>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
-              <div class="col-sm-9">
-                <label>[[.Info.phone]]</label>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
-              <div class="col-sm-9">
-                <label>[[.Info.email]]</label>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
-              <div class="col-sm-9">
-                  <label>
-                    [[if .Info.sex]]
-                        [[if eq .Info.sex "1"]]
-                          <span class="lbl">男</span>
-                        [[else]]
-                          <span class="lbl">女</span>
-                        [[end]]
-                    [[else]]
-                        <span class="lbl">未知</span>
-                    [[end]]
-                  </label>
-              </div>
-            </div>
-
-            <div class="space-4"></div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
-              <div class="col-sm-9">
-                  <label>
-                    [[range $k,$v := .Role]]
-                        [[if eq $v "root"]] 
-                            <span class="lbl">超级管理员 </span>
-                        [[end]]
-                        [[if eq $v "admin1"]] 
-                            <span class="lbl">一级管理员 </span>
-                        [[end]]
-                        [[if eq $v "admin2"]] 
-                            <span class="lbl">二级管理员 </span>
-                        [[end]]
-                        [[if eq $v "guest"]] 
-                            <span class="lbl">游客</span>
-                        [[end]]
-                    [[end]]
-                  </label>
+          <form class="form-horizontal" id="formBox" role="form">
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.account]]</label>
                 </div>
-            </div>
+              </div>
 
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.name]]</label>
+                </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.phone]]</label>
+                </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.email]]</label>
+                </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
+                <div class="col-sm-9">
+                    <label>
+                      [[if .Info.sex]]
+                          [[if eq .Info.sex "1"]]
+                            <span class="lbl">男</span>
+                          [[else]]
+                            <span class="lbl">女</span>
+                          [[end]]
+                      [[else]]
+                          <span class="lbl">未知</span>
+                      [[end]]
+                    </label>
+                </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
+                <div class="col-sm-9">
+                    <label>
+                      [[range $k,$v := .Role]]
+                          [[if eq $v "root"]] 
+                              <span class="lbl">超级管理员 </span>
+                          [[end]]
+                          [[if eq $v "admin1"]] 
+                              <span class="lbl">一级管理员 </span>
+                          [[end]]
+                          [[if eq $v "admin2"]] 
+                              <span class="lbl">二级管理员 </span>
+                          [[end]]
+                          [[if eq $v "guest"]] 
+                              <span class="lbl">游客</span>
+                          [[end]]
+                      [[end]]
+                    </label>
+                  </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.create_time]]</label>
+                </div>
+              </div>
+
+              <div class="space-4"></div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="phone"> 登陆 </label>
+                <div class="col-sm-9">
+                  <label>[[.Info.login_time]]</label>
+                </div>
+              </div>
           </form>
 
 
-    <!-- PAGE CONTENT ENDS -->
-    </div>
-</div><!-- /.row -->
+        <!-- PAGE CONTENT ENDS -->
+        </div>
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
 
 
 <script type="text/javascript">

@@ -12,6 +12,8 @@
         <link href="/static/css/base/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="/static/css/base/font-awesome.min.css" />
         <link rel="stylesheet" href="/static/css/base/chosen.css" />
+        <link rel="stylesheet" href="/static/css/base/jquery.gritter.css" />
+
 
         <!--[if IE 7]>
         <link rel="stylesheet" href="/static/css/base/font-awesome-ie7.min.css" />
@@ -181,26 +183,7 @@
 
 
                 <div class="main-content">
-                    <div class="breadcrumbs" id="breadcrumbs">
-                        <script type="text/javascript">
-                            try {
-                                ace.settings.check('breadcrumbs', 'fixed')
-                            } catch (e) {
-                            }
-                        </script>
-
-                        <ul class="breadcrumb">
-                            <li>
-                                <i class="icon-home home-icon"></i>
-                                <a href="/">首页</a>
-                            </li>
-                            <li class="active">Somi</li>
-                        </ul><!-- .breadcrumb -->
-                    </div>
-                    
-                    <div class="page-content">
-                         [[.LayoutContent]]
-                    </div><!-- /.page-content -->
+                     [[.LayoutContent]]
                 </div><!-- /.main-content -->
 
 
@@ -345,8 +328,23 @@ var Somi = {
             timeout: 5000,
             success: func,
             error:function(){
-              alert("网络连接超时");
+              Somi.gritter('error', "网络连接超时", 10000);
             }
+        });
+    },
+
+    //gritter提示信息
+    gritter: function(classname, text, time, title){
+        var setclassname = ('undefined' != typeof classname && ''!=classname) ? classname : 'success';
+        var settext = ('undefined' != typeof text && '' != text) ? text : '';
+        var settime = ('undefined' != typeof time && '' != time) ? time : 5000;
+        var settitle = ('undefined' != typeof title && '' != title) ? title : '提示';
+        $.gritter.add({
+            title: '<i class="icon-ok-sign"></i>'+settitle,
+            text: settext,
+            class_name: 'gritter-'+setclassname,
+            time: settime,
+            position: 'top-right',
         });
     }
 }

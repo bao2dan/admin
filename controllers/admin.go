@@ -36,7 +36,7 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "lock", ""}
+	fileds := []string{"", "account", "role", "name", "phone", "email", "create_time", "update_time", "login_time", "lock", ""}
 	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
@@ -49,7 +49,7 @@ func (this *AdminController) List() {
 		                <span class="lbl"></span>
 		            </label>`
 		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
-		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons" account="%s">
+		opHtmlStr := `<div class="action-buttons" account="%s" style="width:80px;">
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
 			                </a>
@@ -75,7 +75,7 @@ func (this *AdminController) List() {
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
-			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
+			line := []interface{}{seHtml, row["account"], row["role"], row["name"], row["phone"], row["create_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
 	}
