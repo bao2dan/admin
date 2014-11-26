@@ -3,7 +3,7 @@
         try {ace.settings.check('breadcrumbs', 'fixed');} catch (e) {}
     </script>
     <ul class="breadcrumb">
-        <li>
+        <li class="active">
             <i class="icon-home home-icon"></i>管理员
         </li>
         <li class="active">个人资料</li>
@@ -14,8 +14,8 @@
     <div class="page-header">
         <h1>
             <small>
-                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
-                个人资料
+                <i class="icon-hand-right icon-animated-hand-pointer orange"></i>
+                请谨慎操作
             </small>
         </h1>
     </div><!-- /.page-header -->

@@ -4,9 +4,9 @@
     </script>
     <ul class="breadcrumb">
         <li>
-            <i class="icon-home home-icon"></i>管理员
+            <i class="icon-home home-icon"></i>基础配置
         </li>
-        <li class="active">编辑</li>
+        <li class="active">分类列表</li>
     </ul><!-- .breadcrumb -->
 </div><!-- .breadcrumbs -->
 
@@ -14,8 +14,8 @@
     <div class="page-header">
         <h1>
             <small>
-                <i class="icon-hand-right icon-animated-hand-pointer orange"></i>
-                请谨慎操作
+                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+                新建分类
             </small>
         </h1>
     </div><!-- /.page-header -->
@@ -101,6 +101,22 @@
                 </div>
                 [[end]]
 
+                <div class="space-4"></div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
+                  <div class="col-sm-9">
+                    <label>[[.Info.create_time]]</label>
+                  </div>
+                </div>
+
+                <div class="space-4"></div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 登陆 </label>
+                  <div class="col-sm-9">
+                    <label>[[.Info.login_time]]</label>
+                  </div>
+                </div>
+
                 <!--下拉框-->
                 <div class="form-group" style="display:none;">
                   <label class="col-sm-3 control-label no-padding-right" for="role_bak"> 权限 </label>
@@ -125,10 +141,8 @@
                     <button class="btn btn-sm btn-success" id="submit" type="button">
                       <i class="icon-ok bigger-110"></i> 确定 </button>
                     &nbsp; &nbsp; &nbsp;
-                    [[if .IsAdmin]]
-                      <button class="btn btn-sm" id="cancel" type="button">
-                        <i class="icon-undo bigger-110"></i> 取消 </button>
-                    [[end]]
+                    <button class="btn btn-sm" id="cancel" type="button">
+                      <i class="icon-undo bigger-110"></i> 取消 </button>
                   </div>
                 </div>
             </form>
@@ -143,7 +157,7 @@
 <script type="text/javascript">
 $(function() {
     //下拉框样式初始化
-    $("#formBox select").chosen()
+    $("select").chosen()
     .next('.chosen-container').each(function(){
       $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
       $(this).find('.chosen-drop').css({});

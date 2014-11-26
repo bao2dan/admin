@@ -15,7 +15,29 @@ type CategoryController struct {
 }
 
 func (this *CategoryController) Create() {
-	this.Ctx.WriteString("xxxxxxxxxxxccccccccccccccccccc")
+	if !this.IsAjax() {
+		this.Layout = "layout.html"
+		this.TplNames = "category/create.tpl"
+		this.Render()
+		return
+	}
+
+	//result map
+	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	var err error
+	//连接mongodb
+	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
+	if nil != err {
+		this.Data["json"] = err.Error()
+		this.ServeJson()
+		return
+	}
+	defer models.MgoCon.Close()
+
+	this.Data["json"] = result
+	this.ServeJson()
+	return
 }
 
 //分类列表

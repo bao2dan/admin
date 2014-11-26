@@ -14,8 +14,8 @@
     <div class="page-header">
         <h1>
             <small>
-                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
-                管理员列表
+                <i class="icon-hand-right icon-animated-hand-pointer orange"></i>
+                请谨慎操作
             </small>
         </h1>
     </div><!-- /.page-header -->
@@ -27,9 +27,9 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="table-header orange">
+                    <div class="table-header white">
                         <i class="icon-exclamation-sign"></i>
-                        请谨慎操作此列表中的功能
+                        只列出了部分信息
                     </div>
 
                     <div class="table-responsive">
@@ -86,17 +86,9 @@
                 ];
             config.fnServerData = function(sSource, aoData, fnCallback){
                 aoData.push( { "name": "bao2dan", "value": "hahahaha" } );
-                $.ajax( {
-                    type: "POST",
-                    url: sSource,
-                    data: aoData,
-                    dataType: "json",
-                    cache: false,
-                    timeout: 5000,
-                    success: function(data) {
-                        fnCallback(data);
-                        Obj.bindOp(); //绑定操作事件
-                    }
+                Somi.ajax(sSource, aoData, function(data) {
+                    fnCallback(data);
+                    Obj.bindOp(); //绑定操作事件
                 });
             }
             var oTable = $('#table_admin_list').dataTable(config);
@@ -124,14 +116,8 @@
 
                 bootbox.confirm("您确定要操作吗?", function(result) {
                     if(result) {
-                        $.ajax({
-                          type: "POST",
-                          url: url,
-                          data: {"account":account},
-                          dataType: "json",
-                          cache: false,
-                          timeout: 5000,
-                          success:function(data){
+                        var data = {"account":account};
+                        Somi.ajax(url, data, function(data){
                             if(data.succ){
                               if(op == "lock"){
                                 $(_this).find("i").removeClass("icon-unlock").addClass("icon-lock");
@@ -143,10 +129,6 @@
                             }else{
                               Somi.gritter('error', data.msg);
                             }
-                          },
-                          error:function(){
-                            Somi.gritter('error', "网络连接超时", 10000);
-                          }
                         });
                     }
                 });
@@ -164,24 +146,14 @@
 
                 bootbox.confirm("您确定要删除吗?", function(result) {
                     if(result) {
-                        $.ajax({
-                          type: "POST",
-                          url: url,
-                          data: {"account":account},
-                          dataType: "json",
-                          cache: false,
-                          timeout: 5000,
-                          success:function(data){
+                        var data = {"account":account};
+                        Somi.ajax(url, data, function(data){
                             if(data.succ){
                               $(_this).closest("tr").remove();
-                              Somi.gritter('error', "删除成功");
+                              Somi.gritter('success', "删除成功");
                             }else{
                               Somi.gritter('error', data.msg);
                             }
-                          },
-                          error:function(){
-                            Somi.gritter('error', "网络连接超时", 10000);
-                          }
                         });
                     }
                 });

@@ -4,9 +4,8 @@
     </script>
     <ul class="breadcrumb">
         <li>
-            <i class="icon-home home-icon"></i>首页
+            <i class="icon-home home-icon"></i>欢迎页
         </li>
-        <li class="active">欢迎页</li>
     </ul><!-- .breadcrumb -->
 </div><!-- .breadcrumbs -->
 
@@ -14,8 +13,8 @@
     <div class="page-header">
         <h1>
             <small>
-                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
-                欢迎页
+                <i class="icon-hand-right icon-animated-hand-pointer orange"></i>
+                请谨慎操作
             </small>
         </h1>
     </div><!-- /.page-header -->
@@ -25,9 +24,9 @@
             <!-- PAGE CONTENT BEGINS -->
 
 
-            <p class="lead">欢迎光临，请您谨慎操作每一步！</p>
+            <p class="lead">大事、小事少不了，千万别乱搞！</p>
 
-            <p class="lead">你好，我好，大家好才是真的好！</p>
+            <p class="lead">你好、我好，大家好才是真的好！</p>
         
 
         <!-- PAGE CONTENT ENDS -->
