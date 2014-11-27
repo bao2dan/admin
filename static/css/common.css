@@ -2382,7 +2382,9 @@ textarea.input-lg,textarea.form-group-lg .form-control,select[multiple].input-lg
 	.form-horizontal .form-group-sm .control-label {
 	padding-top:6px
 }
-}.btn {
+}
+
+.btn {
 	display:inline-block;
 	padding:6px 12px;
 	margin-bottom:0;

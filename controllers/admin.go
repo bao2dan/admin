@@ -48,7 +48,7 @@ func (this *AdminController) List() {
 		                <input type="checkbox" class="ace" />
 		                <span class="lbl"></span>
 		            </label>`
-		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
+		statusHtmlStr := `<span class="label status %s">%s</span>`
 		opHtmlStr := `<div class="action-buttons" account="%s" >
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>

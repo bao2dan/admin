@@ -26,10 +26,11 @@
 
 
           <form class="form-horizontal" id="formBox" role="form">
+              <div class="space-4"></div>
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.account]]</label>
+                  <span>[[.Info.account]]</span>
                 </div>
               </div>
 
@@ -37,7 +38,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.name]]</label>
+                  <span>[[.Info.name]]</span>
                 </div>
               </div>
 
@@ -45,7 +46,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.phone]]</label>
+                  <span>[[.Info.phone]]</span>
                 </div>
               </div>
 
@@ -53,7 +54,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.email]]</label>
+                  <span>[[.Info.email]]</span>
                 </div>
               </div>
 
@@ -61,7 +62,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
                 <div class="col-sm-9">
-                    <label>
+                    <span>
                       [[if .Info.sex]]
                           [[if eq .Info.sex "1"]]
                             <span class="lbl">男</span>
@@ -71,7 +72,7 @@
                       [[else]]
                           <span class="lbl">未知</span>
                       [[end]]
-                    </label>
+                    </span>
                 </div>
               </div>
 
@@ -79,7 +80,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
                 <div class="col-sm-9">
-                    <label>
+                    <span>
                       [[range $k,$v := .Role]]
                           [[if eq $v "root"]] 
                               <span class="lbl">超级管理员 </span>
@@ -94,7 +95,7 @@
                               <span class="lbl">游客</span>
                           [[end]]
                       [[end]]
-                    </label>
+                    </span>
                   </div>
               </div>
 
@@ -102,7 +103,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.create_time]]</label>
+                  <span>[[.Info.create_time]]</span>
                 </div>
               </div>
 
@@ -110,7 +111,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="phone"> 登陆 </label>
                 <div class="col-sm-9">
-                  <label>[[.Info.login_time]]</label>
+                  <span>[[.Info.login_time]]</span>
                 </div>
               </div>
           </form>
@@ -125,7 +126,7 @@
 <script type="text/javascript">
 $(function() {
     //下拉框样式初始化
-    $("select").chosen()
+    $("#formBox select").chosen()
     .next('.chosen-container').each(function(){
       $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
       $(this).find('.chosen-drop').css({});
