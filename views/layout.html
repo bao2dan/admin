@@ -58,7 +58,7 @@
         <script src="/static/js/base/jquery.easy-pie-chart.min.js"></script>
         <script src="/static/js/base/jquery.gritter.min.js"></script>
         <script src="/static/js/base/chosen.jquery.min.js"></script>
-
+        <script src="/static/js/fuelux/fuelux.tree.min.js"></script>
 
         
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -239,7 +239,7 @@
 </html>
 
 <script type="text/javascript">
-//string format function
+//字符串格式化
 String.prototype.format = function(args) {
     var result = this;
     if (arguments.length > 0) {    
@@ -262,7 +262,7 @@ String.prototype.format = function(args) {
     return result;
 }
 
-// data table config
+//列表配置
 var DataTableConfig = {
     "bProcessing": true,
     "bServerSide": true,
@@ -284,7 +284,31 @@ var DataTableConfig = {
     },
 };
 
+//树相关
+var DataSourceTree = function(options) {
+    this._data  = options.data;
+    this._delay = options.delay;
+}
+DataSourceTree.prototype.data = function(options, callback) {
+    var self = this;
+    var data = null;
+    if(!("name" in options) && !("type" in options)){
+        data = this._data;//the root tree
+        callback({ 'data': data });
+        return;
+    }else if("type" in options && options.type == "folder") {
+        if("additionalParameters" in options && "children" in options.additionalParameters){
+            data = options.additionalParameters.children;
+        }else{
+            data = {} //no data
+        }
+    }
+    if(data != null){//this setTimeout is only for mimicking some random delay
+        setTimeout(function(){callback({ 'data': data });} , 1);
+    }
+};
 
+//业务公用类
 var Somi = {
     //data table search enter key
     dataTableSearchBind: function(oTable){

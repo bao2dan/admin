@@ -27,107 +27,13 @@
 
             <form class="form-horizontal" id="formBox" role="form">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 分类 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="account" value="[[.Info.account]]" placeholder="这里显示的是账号" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="fCategory" value="" placeholder="选择所属分类" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="passwd"> 密码 </label>
-                  <div class="col-sm-9">
-                    <input type="password" id="passwd" value="" placeholder="若不修改，则必须为空" class="col-xs-10 col-sm-5" />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
-                  <div class="col-sm-9">
-                    <input type="text" id="name" value="[[.Info.name]]" placeholder="请输入姓名" class="col-xs-10 col-sm-5" />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
-                  <div class="col-sm-9">
-                    <input type="text" id="phone" value="[[.Info.phone]]" placeholder="请输入手机号码" class="col-xs-10 col-sm-5" />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
-                  <div class="col-sm-9">
-                    <input type="text" id="email" value="[[.Info.email]]" placeholder="请输入邮箱" class="col-xs-10 col-sm-5" />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
-                  <div class="col-sm-9">
-                      <label>
-                        <input name="sex" value="1" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "1"]] checked [[end]][[end]] />
-                        <span class="lbl">男</span>
-                      </label>
-                      <label>
-                        <input name="sex" value="0" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "0"]] checked [[end]] [[else]] checked [[end]]/>
-                        <span class="lbl">女</span>
-                      </label>
-                  </div>
-                </div>
-
-                [[if .IsAdmin]]
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
-                  <div class="col-sm-9">
-                      <label>
-                        <input name="role" value="admin1" [[range $k,$v := .Role]][[if eq $v "admin1"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">一级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="admin2" [[range $k,$v := .Role]][[if eq $v "admin2"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">二级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="guest" [[range $k,$v := .Role]][[if eq $v "guest"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">游客</span>
-                      </label>
-                    </div>
-                </div>
-                [[end]]
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
-                  <div class="col-sm-9">
-                    <label>[[.Info.create_time]]</label>
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 登陆 </label>
-                  <div class="col-sm-9">
-                    <label>[[.Info.login_time]]</label>
-                  </div>
-                </div>
-
-                <!--下拉框-->
-                <div class="form-group" style="display:none;">
-                  <label class="col-sm-3 control-label no-padding-right" for="role_bak"> 权限 </label>
-                  <div class="col-sm-9">
-                    <select class="col-xs-10 col-sm-5" id="role_bak" data-placeholder="请选择权限">
-                      <option value="guest">游客</option>
-                      <option value="admin1">一级管理员</option>
-                      <option value="admin2">二级管理员</option>
-                    </select>
-                  </div>
-                </div>
+                
 
                 <div class="form-group">
                   <label class="col-sm-3 control-label no-padding-right"></label>
@@ -155,18 +61,105 @@
 
 
 <script type="text/javascript">
+var treeJsonData = [
+    {name: 'For Sale', type: 'folder', additionalParameters:{
+      'children' : [
+          {name: 'Appliances', type: 'item'},
+          {name: 'Arts & Crafts', type: 'item'},
+          {name: 'Clothing', type: 'item'},
+          {name: 'Computers', type: 'item', data:"Computers1"},
+          {name: 'Jewelry', type: 'item', data:"jewelry1"},
+          {name: 'Office & Business', type: 'item'},
+          {name: 'Sports & Fitness', type: 'folder', additionalParameters:{
+              'children' : [
+                  {name: 'Appliances', type: 'item', data:"Appliances1"}
+              ]
+          }}
+        ]
+      }} ,
+    {name: 'For Sale', type: 'folder', additionalParameters:{
+      'children' : [
+          {name: 'Appliances', type: 'item'},
+          {name: 'Arts & Crafts', type: 'item'},
+          {name: 'Clothing', type: 'item'},
+          {name: 'Computers', type: 'item'},
+          {name: 'Jewelry', type: 'item', data:"jewelry1"},
+          {name: 'Office & Business', type: 'item'},
+          {name: 'Sports & Fitness', type: 'folder', additionalParameters:{
+              'children' : [
+                  {name: 'Appliances', type: 'item'}
+              ]
+          }}
+        ]
+      }} ,
+    {name: 'For Sale', type: 'folder', additionalParameters:{
+      'children' : [
+          {name: 'Appliances', type: 'item'},
+          {name: 'Arts & Crafts', type: 'item'},
+          {name: 'Clothing', type: 'item'},
+          {name: 'Computers', type: 'item'},
+          {name: 'Jewelry', type: 'item', data:"jewelry1"},
+          {name: 'Office & Business', type: 'item'},
+          {name: 'Sports & Fitness', type: 'folder', additionalParameters:{
+              'children' : [
+                  {name: 'Appliances', type: 'item'}
+              ]
+          }}
+        ]
+      }} ,
+    {name: 'Real Estate', type: 'folder', data:"Estate1"} ,
+    {name: 'Pets', type: 'folder', data:"Pets1"} ,
+    {name: 'Tickets', type: 'item', data:"Tickets1"} ,
+    {name: 'Services', type: 'item', data:"services1"} ,
+    {name: 'Personals', type: 'item', data:"personals1"}
+];
+
+
 $(function() {
-    //下拉框样式初始化
-    $("select").chosen()
-    .next('.chosen-container').each(function(){
-      $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
-      $(this).find('.chosen-drop').css({});
-      $(this).find('.chosen-search input').css({});
-    });
+    //选择所属分类
+    $('#formBox').on('click', '#fCategory', function(){
+      //分类树初始化
+      var treeDataSource = new DataSourceTree({data: treeJsonData});
+      var treeHtml = $("<div>").attr({"id":"treeCategory", "class":"tree"}).css({"width":"100%", "height":"400px", "overflow":"auto"});
+      $(treeHtml).ace_tree({
+          'dataSource': treeDataSource,
+          'multiSelect': false,
+          'loadingHTML': '<div class="tree-loading"><i class="icon-refresh icon-spin blue"></i></div>',
+          'open-icon': 'icon-minus',
+          'close-icon': 'icon-plus',
+          'selectable': true,
+          'selected-icon': 'icon-ok',
+          'unselected-icon': 'icon-remove'
+        });
+
+      $(treeHtml).on('selected', function (evt, data) {
+          console.log(evt)
+          console.log(data.info[0].data)
+      });
+
+
+      bootbox.dialog({
+        message: treeHtml,
+        buttons: {
+          "button": {
+            "label" : "取消",
+            "className" : "btn-sm"
+          }
+        }
+      });
+
+
+        
+        /*bootbox.confirm(treeHtml, function(result) {
+            if(result) {
+                
+            }
+        });*/
+    })
 
     //取消
     $("#formBox").on("click", "#cancel", function(){
-        location.href = "/admin/list";
+        location.href = "/category/list";
     });
 
     //提交
