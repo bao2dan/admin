@@ -7,23 +7,68 @@ import (
 
 	"fmt"
 	"html/template"
-	//"strings"
+	"strconv"
 )
 
 type CategoryController struct {
 	beego.Controller
 }
 
-func (this *CategoryController) Create() {
+func (this *CategoryController) Add() {
+	//父分类ID
+	fid := this.GetString("fid")
+	fname := this.GetString("fname")
+	flevel := this.GetString("flevel")
+	if "" == fid {
+		fid = "0"
+	}
+	if "" == flevel {
+		flevel = "0"
+	}
+	if "" == fname {
+		fname = "无"
+	}
+	level := "1"
+	if "0" != flevel {
+		flev, _ := strconv.Atoi(flevel)
+		level = strconv.Itoa(flev + 1)
+	}
+
 	if !this.IsAjax() {
+		this.Data["Fid"] = fid
+		this.Data["Fname"] = fname
+		this.Data["Flevel"] = flevel
 		this.Layout = "layout.html"
-		this.TplNames = "category/create.tpl"
+		this.TplNames = "category/add.tpl"
 		this.Render()
 		return
 	}
 
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
+
+	//获取参数并校验
+	name := this.GetString("name")
+	sort := this.GetString("sort")
+
+	hasErr := false
+	if "" == fid {
+		result["msg"] = "父分类ID有误"
+		hasErr = true
+	}
+	if "" == name {
+		result["msg"] = "名称有误"
+		hasErr = true
+	}
+	if "" == sort {
+		result["msg"] = "排序有误"
+		hasErr = true
+	}
+	if hasErr {
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
 
 	var err error
 	//连接mongodb
@@ -35,6 +80,17 @@ func (this *CategoryController) Create() {
 	}
 	defer models.MgoCon.Close()
 
+	//添加分类
+	err = models.AddCategory(fid, level, name, sort, nowTime)
+	if nil != err {
+		result["msg"] = err.Error()
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
+
+	result["succ"] = 1
+	result["msg"] = "添加成功"
 	this.Data["json"] = result
 	this.ServeJson()
 	return
@@ -62,7 +118,7 @@ func (this *CategoryController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"", "account", "role", "email", "create_time", "update_time", "login_time", "lock", ""}
+	fileds := []string{"", "account", "role", "email", "add_time", "update_time", "login_time", "lock", ""}
 	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
@@ -101,7 +157,7 @@ func (this *CategoryController) List() {
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
-			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["create_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
+			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["add_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
 	}

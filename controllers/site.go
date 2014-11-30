@@ -112,6 +112,7 @@ func (this *SiteController) Menu() {
 	menu := template.HTML(menuStr)
 
 	result["succ"] = 1
+	result["msg"] = "成功"
 	result["menu"] = menu
 	this.Data["json"] = result
 	this.ServeJson()
@@ -148,7 +149,7 @@ func (this *SiteController) Login() {
 	defer models.MgoCon.Close()
 
 	//获取账号信息
-	info, err := models.LoginGetAdminInfo(p["account"], p["passwd"])
+	info, err := models.GetLoginAdmin(p["account"], p["passwd"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -207,7 +208,7 @@ func (this *SiteController) Register() {
 	defer models.MgoCon.Close()
 
 	//判断是否已经存在该账号
-	info, err := models.GetAdminInfo(p["account"])
+	info, err := models.GetAdmin(p["account"])
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -228,7 +229,7 @@ func (this *SiteController) Register() {
 	token := md5Encode(p["account"] + ACCOUNT_SECURITY + dayTimeStr)
 
 	//保存注册信息
-	err = models.InsertAdminInfo(p["account"], p["passwd"], token, nowTime)
+	err = models.AddAdminInfo(p["account"], p["passwd"], token, nowTime)
 	if nil == err {
 		//发送激活邮件
 		this.sendActivateMail(p["account"], p["account"], token)
@@ -283,7 +284,7 @@ func (this *SiteController) Activate() {
 	}
 
 	//激活账号
-	err = models.AdminUnlock(account, nowTime)
+	err = models.UnlockAdmin(account, nowTime)
 	if nil == err {
 		this.Redirect("/site/login", 302)
 		return

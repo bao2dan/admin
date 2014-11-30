@@ -36,7 +36,7 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"", "account", "role", "name", "phone", "email", "create_time", "update_time", "login_time", "lock", ""}
+	fileds := []string{"", "account", "role", "name", "phone", "email", "add_time", "update_time", "login_time", "lock", ""}
 	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
@@ -75,7 +75,7 @@ func (this *AdminController) List() {
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
-			line := []interface{}{seHtml, row["account"], row["role"], row["name"], row["phone"], row["create_time"], row["login_time"], statusHtml, opHtml}
+			line := []interface{}{seHtml, row["account"], row["role"], row["name"], row["phone"], row["add_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
 	}
@@ -83,6 +83,7 @@ func (this *AdminController) List() {
 	result["iTotalRecords"] = count
 	result["aaData"] = rows
 	result["succ"] = 1
+	result["msg"] = "成功"
 
 	this.Data["json"] = result
 	this.ServeJson()
@@ -124,7 +125,7 @@ func (this *AdminController) Update() {
 	defer models.MgoCon.Close()
 
 	//获取管理员信息
-	info, err := models.GetAdminInfo(account)
+	info, err := models.GetAdmin(account)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -155,20 +156,22 @@ func (this *AdminController) Update() {
 		result["msg"] = "账号有误"
 		hasErr = true
 	}
-
 	if "" != passwd && !isPasswd(passwd) {
 		result["msg"] = "密码有误"
 		hasErr = true
 	}
-
 	if "" == name || len(name) < 2 || len(name) > 12 {
 		result["msg"] = "姓名有误"
 		hasErr = true
 	}
-
 	if "" == phone || !isPhone(phone) {
 		result["msg"] = "手机号码有误"
 		hasErr = true
+	}
+	if hasErr {
+		this.Data["json"] = result
+		this.ServeJson()
+		return
 	}
 
 	if "" != passwd {
@@ -176,15 +179,9 @@ func (this *AdminController) Update() {
 		passwd = md5Encode(passwd + PASSWD_SECURITY)
 	}
 
-	err = models.AdminUpdate(account, passwd, name, phone, email, sex, role, nowTime)
-
-	if hasErr {
-		this.Data["json"] = result
-		this.ServeJson()
-		return
-	}
-
+	err = models.UpdateAdmin(account, passwd, name, phone, email, sex, role, nowTime)
 	result["succ"] = 1
+	result["msg"] = "编辑成功"
 	this.Data["json"] = result
 	this.ServeJson()
 	return
@@ -223,11 +220,12 @@ func (this *AdminController) Del() {
 	}
 	defer models.MgoCon.Close()
 
-	err = models.AdminDel(account)
+	err = models.DelAdmin(account)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
 		result["succ"] = 1
+		result["msg"] = "删除成功"
 	}
 
 	this.Data["json"] = result
@@ -253,7 +251,7 @@ func (this *AdminController) View() {
 	defer models.MgoCon.Close()
 
 	//获取管理员信息
-	info, err := models.GetAdminInfo(account)
+	info, err := models.GetAdmin(account)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -291,11 +289,12 @@ func (this *AdminController) Lock() {
 	}
 	defer models.MgoCon.Close()
 
-	err = models.AdminLock(account, nowTime)
+	err = models.LockAdmin(account, nowTime)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
 		result["succ"] = 1
+		result["msg"] = "锁定成功"
 	}
 
 	this.Data["json"] = result
@@ -325,11 +324,12 @@ func (this *AdminController) Unlock() {
 	}
 	defer models.MgoCon.Close()
 
-	err = models.AdminUnlock(account, nowTime)
+	err = models.UnlockAdmin(account, nowTime)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
 		result["succ"] = 1
+		result["msg"] = "解锁成功"
 	}
 
 	this.Data["json"] = result

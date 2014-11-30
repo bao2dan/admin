@@ -27,5 +27,5 @@ func init() {
 
 	//category
 	beego.Router("/category/list", &controllers.CategoryController{}, "get:List")
-	beego.Router("/category/create", &controllers.CategoryController{}, "*:Create")
+	beego.Router("/category/add", &controllers.CategoryController{}, "*:Add")
 }

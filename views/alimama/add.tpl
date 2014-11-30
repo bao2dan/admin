@@ -29,7 +29,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label no-padding-right"> 分类 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="fCategory" value="" placeholder="选择所属分类" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="fCategory" value="" placeholder="选择父分类" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
@@ -116,7 +116,7 @@ var treeJsonData = [
 
 
 $(function() {
-    //选择所属分类
+    //选择父分类
     $('#formBox').on('click', '#fCategory', function(){
       //分类树初始化
       var treeDataSource = new DataSourceTree({data: treeJsonData});
@@ -133,8 +133,9 @@ $(function() {
         });
 
       $(treeHtml).on('selected', function (evt, data) {
-          console.log(evt)
-          console.log(data.info[0].data)
+          var obj = $(this).tree('selectedItems');
+          var catId = obj[0].data;
+          console.log(catId)
       });
 
 

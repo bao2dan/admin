@@ -7,7 +7,7 @@ import (
 )
 
 //获取账号[登陆用]
-func LoginGetAdminInfo(account, passwd string) (info map[string]string, err error) {
+func GetLoginAdmin(account, passwd string) (info map[string]string, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	where := M{"account": account, "passwd": passwd, "lock": "0"}
 	err = connect.Find(where).One(&info)
@@ -31,9 +31,9 @@ func GetNotActivateAdmin(account string) (info map[string]string, err error) {
 }
 
 //新增账号信息
-func InsertAdminInfo(account, passwd, token, nowTime string) (err error) {
+func AddAdminInfo(account, passwd, token, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Insert(M{"account": account, "lock": "1", "token": token, "passwd": passwd, "role": "guest", "name": "", "phone": "", "email": account, "sex": "0", "login_time": nowTime, "update_time": nowTime, "create_time": nowTime})
+	err = connect.Insert(M{"account": account, "lock": "1", "token": token, "passwd": passwd, "role": "guest", "name": "", "phone": "", "email": account, "sex": "0", "login_time": nowTime, "update_time": nowTime, "add_time": nowTime})
 	return err
 }
 

@@ -34,7 +34,7 @@ func AdminList(table map[string]interface{}) (list []map[string]interface{}, cou
 }
 
 //修改管理员信息
-func AdminUpdate(account, passwd, name, phone, email, sex, role, nowTime string) (err error) {
+func UpdateAdmin(account, passwd, name, phone, email, sex, role, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	set := M{"name": name, "phone": phone, "email": email, "sex": sex, "update_time": nowTime}
 	if "" != passwd {
@@ -48,28 +48,28 @@ func AdminUpdate(account, passwd, name, phone, email, sex, role, nowTime string)
 }
 
 //解锁(激活)管理员账号
-func AdminUnlock(account, nowTime string) (err error) {
+func UnlockAdmin(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	err = connect.Update(M{"account": account, "lock": "1"}, M{"$set": M{"lock": "0", "update_time": nowTime}})
 	return err
 }
 
 //锁定管理员账号
-func AdminLock(account, nowTime string) (err error) {
+func LockAdmin(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	err = connect.Update(M{"account": account, "lock": "0"}, M{"$set": M{"lock": "1", "update_time": nowTime}})
 	return err
 }
 
 //删除管理员账号
-func AdminDel(account string) (err error) {
+func DelAdmin(account string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	err = connect.Remove(M{"account": account})
 	return err
 }
 
 //获取管理员账号信息[注册或其他]
-func GetAdminInfo(account string) (info map[string]string, err error) {
+func GetAdmin(account string) (info map[string]string, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	where := M{"account": account}
 	err = connect.Find(where).One(&info)

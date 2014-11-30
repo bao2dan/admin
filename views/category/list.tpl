@@ -30,7 +30,7 @@
                     <div class="table-header white">
                         <i class="icon-exclamation-sign"></i>
                         只列出了部分信息
-                        <a href="/category/create" class="btn btn-success btn-sm pull-right" role="button" style="margin:4px 10px 0px 0px;">新建</a>
+                        <a href="/category/add" class="btn btn-success btn-sm pull-right" role="button" style="margin:4px 10px 0px 0px;">添加一级分类</a>
                     </div>
 
                     <div class="table-responsive">

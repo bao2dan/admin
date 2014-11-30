@@ -103,7 +103,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
                 <div class="col-sm-9">
-                  <span>[[.Info.create_time]]</span>
+                  <span>[[.Info.add_time]]</span>
                 </div>
               </div>
 

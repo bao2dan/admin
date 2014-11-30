@@ -36,6 +36,7 @@ const (
 	NOTFOUND   string = "not found" //not found one from mongo
 	SOMI              = "somi"
 	ADMIN_USER        = "admin.user"
+	CATEGORY          = "category"
 )
 
 var (
