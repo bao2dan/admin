@@ -12,24 +12,6 @@ import (
 
 type (
 	M bson.M
-
-	city struct {
-		City_id   string `json:"city_id"`
-		City_name string `json:"city_name"`
-	}
-
-	OrderStatus struct {
-		AppKey           string `bson:"AppKey"`
-		Method           string `bson:"Method"`
-		MsgCode          string `bson:"MsgCode"`
-		MsgCont          string `bson:"MsgCont"`
-		OrderItemGroupId string `bson:"OrderItemGroupId"`
-		OrderNo          string `bson:"OrderNo"`
-		OrderStatus      string `bson:"OrderStatus"`
-		OrderStatusTime  string `bson:"OrderStatusTime"`
-		ReqTime          string `bson:"ReqTime"`
-		TranscationID    string `bson:"TranscationID"`
-	}
 )
 
 const (

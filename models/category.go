@@ -36,16 +36,24 @@ func CategoryList(table map[string]interface{}) (list []map[string]interface{}, 
 }
 
 //修改分类信息
-func UpdateCategory(id, name, fid, sort, nowTime string) (err error) {
+func UpdateCategory(catid, name, sort, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
-	set := M{"name": name, "fid": fid, "sort": sort, "update_time": nowTime}
-	err = connect.Update(M{"_id": bson.ObjectIdHex(id)}, M{"$set": set})
+	if !bson.IsObjectIdHex(catid) {
+		err = errors.New("分类ID有误")
+		return err
+	}
+	set := M{"name": name, "sort": sort, "update_time": nowTime}
+	err = connect.Update(M{"_id": bson.ObjectIdHex(catid)}, M{"$set": set})
 	return err
 }
 
 //添加分类
 func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
+	if !bson.IsObjectIdHex(fid) {
+		err = errors.New("分类ID有误")
+		return err
+	}
 	if "0" != fid {
 		fcount, err := connect.Find(M{"_id": bson.ObjectIdHex(fid)}).Count()
 		if 0 == fcount {
@@ -61,5 +69,34 @@ func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 	}
 
 	err = connect.Insert(M{"name": name, "fid": fid, "level": level, "sort": sort, "add_time": nowTime, "update_time": nowTime})
+	return err
+}
+
+//获取分类信息
+func GetCategory(catid string) (info M, err error) {
+	connect := MgoCon.DB(SOMI).C(CATEGORY)
+	if !bson.IsObjectIdHex(catid) {
+		err = errors.New("分类ID有误")
+		return info, err
+	}
+	err = connect.Find(M{"_id": bson.ObjectIdHex(catid)}).One(&info)
+	if nil != err && NOTFOUND == err.Error() {
+		err = nil
+		info = make(M)
+	} else {
+		cid, _ := info["_id"].(bson.ObjectId)
+		info["_id"] = cid.Hex()
+	}
+	return info, err
+}
+
+//删除分类
+func DelCategory(catid string) (err error) {
+	connect := MgoCon.DB(SOMI).C(CATEGORY)
+	if !bson.IsObjectIdHex(catid) {
+		err = errors.New("分类ID有误")
+		return err
+	}
+	err = connect.Remove(M{"_id": bson.ObjectIdHex(catid)})
 	return err
 }

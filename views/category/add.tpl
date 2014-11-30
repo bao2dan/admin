@@ -133,9 +133,9 @@ $(function() {
         }
         Somi.ajax(url, data, function(data){
             if(data.succ){
-              $('#errorMsg').text("添加成功");
+              $('#errorMsg').text(data.msg).css({"color":"#00cc66"});
             } else {
-              $('#errorMsg').text(data.msg);
+              $('#errorMsg').text(data.msg).css({"color":"#f00"});
             }
         });
     });

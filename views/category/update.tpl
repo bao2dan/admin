@@ -14,8 +14,8 @@
     <div class="page-header">
         <h1>
             <small>
-                <i class="icon-hand-right icon-animated-hand-pointer orange"></i>
-                请谨慎操作
+                <i class="icon-hand-right icon-animated-hand-pointer blue"></i>
+                编辑分类（编辑一级分类时，父分类ID和名称必须为默认值0/无）
             </small>
         </h1>
     </div><!-- /.page-header -->
@@ -27,89 +27,57 @@
 
             <form class="form-horizontal" id="formBox" role="form">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 父分类ID </label>
                   <div class="col-sm-9">
-                    <input type="text" id="account" value="[[.Info.account]]" placeholder="这里显示的是账号" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" value="[[.Info.fid]]"  placeholder="" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="passwd"> 密码 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 父分类名称 </label>
                   <div class="col-sm-9">
-                    <input type="password" id="passwd" value="" placeholder="若不修改，则必须为空" class="col-xs-10 col-sm-5" />
+                    <input type="text" value="[[.Info.fname]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 父分类级数 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="name" value="[[.Info.name]]" placeholder="请输入姓名" class="col-xs-10 col-sm-5" />
+                    <input type="text" value="[[.Info.flevel]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="catid"> 分类ID </label>
                   <div class="col-sm-9">
-                    <input type="text" id="phone" value="[[.Info.phone]]" placeholder="请输入手机号码" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="catid" value="[[.Info._id]]" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 添加时间 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="email" value="[[.Info.email]]" placeholder="请输入邮箱" class="col-xs-10 col-sm-5" />
+                    <input type="text" value="[[.Info.add_time]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="name"> 分类名称 </label>
                   <div class="col-sm-9">
-                      <label>
-                        <input name="sex" value="1" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "1"]] checked [[end]][[end]] />
-                        <span class="lbl">男</span>
-                      </label>
-                      <label>
-                        <input name="sex" value="0" type="radio" class="ace" [[if .Info.sex]][[if eq .Info.sex "0"]] checked [[end]] [[else]] checked [[end]]/>
-                        <span class="lbl">女</span>
-                      </label>
+                    <input type="text" id="name" value="[[.Info.name]]" placeholder="分类名称" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
-                [[if .IsAdmin]]
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="sort"> 分类排序 </label>
                   <div class="col-sm-9">
-                      <label>
-                        <input name="role" value="admin1" [[range $k,$v := .Role]][[if eq $v "admin1"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">一级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="admin2" [[range $k,$v := .Role]][[if eq $v "admin2"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">二级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="guest" [[range $k,$v := .Role]][[if eq $v "guest"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">游客</span>
-                      </label>
-                    </div>
-                </div>
-                [[end]]
-
-                <!--下拉框-->
-                <div class="form-group" style="display:none;">
-                  <label class="col-sm-3 control-label no-padding-right" for="role_bak"> 权限 </label>
-                  <div class="col-sm-9">
-                    <select class="col-xs-10 col-sm-5" id="role_bak" data-placeholder="请选择权限">
-                      <option value="guest">游客</option>
-                      <option value="admin1">一级管理员</option>
-                      <option value="admin2">二级管理员</option>
-                    </select>
+                    <input type="text" id="sort" value="[[.Info.sort]]" title="数字(正序)" placeholder="请输入数字(正序)" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
@@ -125,10 +93,8 @@
                     <button class="btn btn-sm btn-success" id="submit" type="button">
                       <i class="icon-ok bigger-110"></i> 确定 </button>
                     &nbsp; &nbsp; &nbsp;
-                    [[if .IsAdmin]]
                       <button class="btn btn-sm" id="cancel" type="button">
                         <i class="icon-undo bigger-110"></i> 取消 </button>
-                    [[end]]
                   </div>
                 </div>
             </form>
@@ -142,72 +108,43 @@
 
 <script type="text/javascript">
 $(function() {
-    //下拉框样式初始化
-    $("#formBox select").chosen()
-    .next('.chosen-container').each(function(){
-      $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
-      $(this).find('.chosen-drop').css({});
-      $(this).find('.chosen-search input').css({});
-    });
-
     //取消
     $("#formBox").on("click", "#cancel", function(){
-        location.href = "/admin/list";
+        location.href = "/category/list";
     });
 
     //提交
     $("#formBox").on("click", "#submit", function(){
-        var account = $("#account").val();
-        var passwd = $("#passwd").val();
+        var catid = $("#catid").val();
         var name = $("#name").val();
-        var phone = $("#phone").val();
-        var email = $("#email").val();
-        var sex = $("#formBox input[name='sex']:checked").val();
-        var role = [];
-        $("#formBox input[name='role']:checked").each(function(k, v) {
-              role.push($(v).val());
-        });
+        var sort = $("#sort").val();
 
-        if ("" == account || !Somi.isEmail(account)) {
-          $('#errorMsg').text('账号有误');
+        if ("" == catid) {
+          $('#errorMsg').text('分类ID有误');
           return false;
         }
 
-        if ("" != passwd && !Somi.isPasswd(passwd)) {
-          $('#errorMsg').text('密码有误');
+        if ("" == name) {
+          $('#errorMsg').text('名称有误');
           return false;
         }
 
-        if ("" == name || name.length < 2 || name.length > 5) {
-          $('#errorMsg').text('姓名有误');
+        if ("" == sort || isNaN(sort)) {
+          $('#errorMsg').text('排序有误');
           return false;
         }
 
-        if ("" == phone || !Somi.isPhone(phone)) {
-          $('#errorMsg').text('手机号有误');
-          return false;
-        }
-
-        if (!email || !Somi.isEmail(email)) {
-          $('#errorMsg').text('邮箱有误');
-          return false;
-        }
-
-        var url = "/admin/update"
+        var url = "/category/update"
         var data = {
-          "account": account,
-          "passwd": passwd,
+          "catid": catid,
           "name": name,
-          "phone": phone,
-          "email": email,
-          "sex": sex,
-          "role": role.join(","),
+          "sort": sort
         }
         Somi.ajax(url, data, function(data){
             if(data.succ){
-              $('#errorMsg').text("修改成功");
+              $('#errorMsg').text(data.msg).css({"color":"#00cc66"});
             } else {
-              $('#errorMsg').text(data.msg);
+              $('#errorMsg').text(data.msg).css({"color":"#f00"});
             }
         });
     });

@@ -124,16 +124,16 @@ func (this *AdminController) Update() {
 	}
 	defer models.MgoCon.Close()
 
-	//获取管理员信息
-	info, err := models.GetAdmin(account)
-	if nil != err {
-		result["msg"] = err.Error()
-		this.Data["json"] = result
-		this.ServeJson()
-		return
-	}
-
 	if !this.IsAjax() {
+		//获取管理员信息
+		info, err := models.GetAdmin(account)
+		if nil != err {
+			result["msg"] = err.Error()
+			this.Data["json"] = result
+			this.ServeJson()
+			return
+		}
+
 		this.Data["IsAdmin"] = isAdmin
 		this.Data["Role"] = strings.Split(info["role"], ",")
 		this.Data["Info"] = info
