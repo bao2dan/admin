@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/utils"
 
 	"admin/models"
 
@@ -75,7 +76,20 @@ func (this *AdminController) List() {
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
-			line := []interface{}{seHtml, row["account"], row["role"], row["name"], row["phone"], row["add_time"], row["login_time"], statusHtml, opHtml}
+
+			//角色值转角色名称
+			r, _ := row["role"].(string)
+			rs := strings.Split(r, ",")
+			rnames := []string{}
+			for _, v := range rolesKv {
+				for rkey, rname := range v {
+					if utils.InSlice(rkey, rs) {
+						rnames = append(rnames, rname)
+					}
+				}
+			}
+
+			line := []interface{}{seHtml, row["account"], strings.Join(rnames, ","), row["name"], row["phone"], row["add_time"], row["login_time"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
 	}
@@ -134,8 +148,28 @@ func (this *AdminController) Update() {
 			return
 		}
 
+		//角色值转角色名称
+		roleHtmlStr := `<label>
+	                      <input name="role" value="%s" %s type="checkbox" class="ace ace-checkbox-2" />
+	                      <span class="lbl">%s</span>
+	                    </label>`
+		roleHtml := ""
+		rs := strings.Split(info["role"], ",")
+		for _, v := range rolesKv {
+			for rkey, rname := range v {
+				if "root" == rkey {
+					continue
+				}
+				if utils.InSlice(rkey, rs) {
+					roleHtml += fmt.Sprintf(roleHtmlStr, rkey, "checked", rname)
+				} else {
+					roleHtml += fmt.Sprintf(roleHtmlStr, rkey, "", rname)
+				}
+			}
+		}
+
 		this.Data["IsAdmin"] = isAdmin
-		this.Data["Role"] = strings.Split(info["role"], ",")
+		this.Data["RoleHtml"] = template.HTML(roleHtml)
 		this.Data["Info"] = info
 		this.Layout = "layout.html"
 		this.TplNames = "admin/update.tpl"
@@ -185,7 +219,6 @@ func (this *AdminController) Update() {
 	this.Data["json"] = result
 	this.ServeJson()
 	return
-
 }
 
 //删除管理员账号
@@ -259,7 +292,19 @@ func (this *AdminController) View() {
 		return
 	}
 
-	this.Data["Role"] = strings.Split(info["role"], ",")
+	//角色值转角色名称
+	roleHtmlStr := `<span class="lbl">%s </span>`
+	roleHtml := ""
+	rs := strings.Split(info["role"], ",")
+	for _, v := range rolesKv {
+		for rkey, rname := range v {
+			if utils.InSlice(rkey, rs) {
+				roleHtml += fmt.Sprintf(roleHtmlStr, rname)
+			}
+		}
+	}
+
+	this.Data["RoleHtml"] = template.HTML(roleHtml)
 	this.Data["Info"] = info
 	this.Layout = "layout.html"
 	this.TplNames = "admin/view.tpl"

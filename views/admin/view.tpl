@@ -62,7 +62,6 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 性别 </label>
                 <div class="col-sm-9">
-                    <span>
                       [[if .Info.sex]]
                           [[if eq .Info.sex "1"]]
                             <span class="lbl">男</span>
@@ -72,7 +71,6 @@
                       [[else]]
                           <span class="lbl">未知</span>
                       [[end]]
-                    </span>
                 </div>
               </div>
 
@@ -80,22 +78,7 @@
               <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
                 <div class="col-sm-9">
-                    <span>
-                      [[range $k,$v := .Role]]
-                          [[if eq $v "root"]] 
-                              <span class="lbl">超级管理员 </span>
-                          [[end]]
-                          [[if eq $v "admin1"]] 
-                              <span class="lbl">一级管理员 </span>
-                          [[end]]
-                          [[if eq $v "admin2"]] 
-                              <span class="lbl">二级管理员 </span>
-                          [[end]]
-                          [[if eq $v "guest"]] 
-                              <span class="lbl">游客</span>
-                          [[end]]
-                      [[end]]
-                    </span>
+                    [[.RoleHtml]]
                   </div>
               </div>
 

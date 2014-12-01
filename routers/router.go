@@ -19,7 +19,7 @@ func init() {
 
 	//admin
 	beego.Router("/admin/list", &controllers.AdminController{}, "*:List")
-	beego.Router("/admin/update", &controllers.AdminController{}, "post:Update")
+	beego.Router("/admin/update", &controllers.AdminController{}, "*:Update")
 	beego.Router("/admin/del", &controllers.AdminController{}, "post:Del")
 	beego.Router("/admin/lock", &controllers.AdminController{}, "post:Lock")
 	beego.Router("/admin/unlock", &controllers.AdminController{}, "post:Unlock")
@@ -27,7 +27,7 @@ func init() {
 
 	//category
 	beego.Router("/category/list", &controllers.CategoryController{}, "*:List")
-	beego.Router("/category/add", &controllers.CategoryController{}, "post:Add")
-	beego.Router("/category/update", &controllers.CategoryController{}, "post:Update")
+	beego.Router("/category/add", &controllers.CategoryController{}, "*:Add")
+	beego.Router("/category/update", &controllers.CategoryController{}, "*:Update")
 	beego.Router("/category/del", &controllers.CategoryController{}, "post:Del")
 }

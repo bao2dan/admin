@@ -85,19 +85,8 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
                   <div class="col-sm-9">
-                      <label>
-                        <input name="role" value="admin1" [[range $k,$v := .Role]][[if eq $v "admin1"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">一级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="admin2" [[range $k,$v := .Role]][[if eq $v "admin2"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">二级管理员</span>
-                      </label>
-                      <label>
-                        <input name="role" value="guest" [[range $k,$v := .Role]][[if eq $v "guest"]] checked [[end]][[end]] type="checkbox" class="ace ace-checkbox-2" />
-                        <span class="lbl">游客</span>
-                      </label>
-                    </div>
+                    [[.RoleHtml]]
+                  </div>
                 </div>
                 [[end]]
 

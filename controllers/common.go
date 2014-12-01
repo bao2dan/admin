@@ -28,7 +28,13 @@ type (
 
 var (
 	//当前时间
-	nowTime string = time.Now().Format("2006-01-02 15:04:05")
+	nowTime string              = time.Now().Format("2006-01-02 15:04:05")
+	rolesKv []map[string]string = []map[string]string{
+		{"root": "超级管理员"},
+		{"admin1": "一级管理员"},
+		{"admin2": "二级管理员"},
+		{"guest": "游客"},
+	}
 )
 
 //发送邮件
