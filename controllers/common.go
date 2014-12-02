@@ -19,7 +19,7 @@ const (
 	EMAILREG         string = `^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$` //email正则
 	PASSWDREG        string = `^[A-Za-z0-9_]+$`                                                         //设置的密码的正则
 	PHONEREG         string = `^1\d{10}$`                                                               //手机号正则
-	MGO_CONF         string = "mgour"                                                                   //somi mongo连接串的配置名
+	MGO_CONF         string = "mgourl"                                                                  //somi mongo连接串的配置名
 )
 
 type (
