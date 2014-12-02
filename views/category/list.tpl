@@ -34,22 +34,16 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="table_admin_list" class="table table-striped table-bordered table-hover">
+                        <table id="table_category_list" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <label>
-                                            <input type="checkbox" class="ace" />
-                                            <span class="lbl"></span>
-                                        </label>
-                                    </th>
-                                    <th>账号</th>
-                                    <th>角色</th>
-                                    <th>姓名</th>
-                                    <th>手机号</th>
+                                    <th>名称</th>
+                                    <th>分类ID</th>
+                                    <th>父分类ID</th>
+                                    <th>级数</th>
+                                    <th>排序</th>
                                     <th>创建时间</th>
-                                    <th>登陆时间</th>
-                                    <th>状态</th>
+                                    <th>修改时间</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -73,81 +67,43 @@
         //data table
         dataTable: function() {
             var config = DataTableConfig;
-            config.sAjaxSource = "/admin/list?rand=" + Math.random();
+            config.sAjaxSource = "/category/list?rand=" + Math.random();
             config.aoColumns = [
-                    {"bSortable":false, "bSearchable":false},
-                    {"bSortable":false},
                     null,
                     {"bSortable":false},
                     {"bSortable":false},
+                    {"bSortable":false},
                     {"bSearchable":false},
                     {"bSearchable":false},
                     {"bSearchable":false},
-                    {"bSortable":false, "bSearchable":false}
+                    {"bSortable":false, "bSearchable":false},
                 ];
             config.fnServerData = function(sSource, aoData, fnCallback){
-                aoData.push( { "name": "bao2dan", "value": "hahahaha" } );
+                aoData.push( {} );
                 Somi.ajax(sSource, aoData, function(data) {
                     fnCallback(data);
                     Obj.bindOp(); //绑定操作事件
                 });
             }
-            var oTable = $('#table_admin_list').dataTable(config);
+            var oTable = $('#table_category_list').dataTable(config);
             Somi.dataTableSearchBind(oTable);
         },
 
         //绑定操作事件
         bindOp: function(){
-            //锁定、解锁
-            $("#table_admin_list .action-buttons").on("click", ".unLockBtn", function(){
+            //删除分类
+            $("#table_category_list .action-buttons").on("click", ".delBtn", function(){
                 var _this = this;
-                var account = $(_this).closest(".action-buttons").attr("account");
-                if (!account) {
+                var catid = $(_this).closest(".action-buttons").attr("catid");
+                if (!catid) {
                   Somi.gritter('error', "参数不能空");
                   return false;
                 }
-
-                var iClass = $(_this).find("i").attr("class")
-                var op = "lock"
-                var url = "/admin/lock"
-                if(iClass.indexOf("icon-lock") >- 1){
-                    op = "unlock"
-                    url = "/admin/unlock"
-                }
-
-                bootbox.confirm("您确定要操作吗?", function(result) {
-                    if(result) {
-                        var data = {"account":account};
-                        Somi.ajax(url, data, function(data){
-                            if(data.succ){
-                              if(op == "lock"){
-                                $(_this).find("i").removeClass("icon-unlock").addClass("icon-lock");
-                                $(_this).closest("tr").find(".status").removeClass("label-success").addClass("label-warning").html("已锁定");
-                              }else{
-                                $(_this).find("i").removeClass("icon-lock").addClass("icon-unlock");
-                                $(_this).closest("tr").find(".status").removeClass("label-warning").addClass("label-success").html("已激活");
-                              }
-                            }else{
-                              Somi.gritter('error', data.msg);
-                            }
-                        });
-                    }
-                });
-            });
-
-            //删除账号
-            $("#table_admin_list .action-buttons").on("click", ".delBtn", function(){
-                var _this = this;
-                var account = $(_this).closest(".action-buttons").attr("account");
-                if (!account) {
-                  Somi.gritter('error', "参数不能空");
-                  return false;
-                }
-                var url = "/admin/del"
+                var url = "/category/del"
 
                 bootbox.confirm("您确定要删除吗?", function(result) {
                     if(result) {
-                        var data = {"account":account};
+                        var data = {"catid":catid};
                         Somi.ajax(url, data, function(data){
                             if(data.succ){
                               $(_this).closest("tr").remove();
@@ -160,15 +116,28 @@
                 });
             });
 
-            //查看账号信息
-            $("#table_admin_list .action-buttons").on("click", ".updateBtn", function(){
+            //编辑分类
+            $("#table_category_list .action-buttons").on("click", ".updateBtn", function(){
                 var _this = this;
-                var account = $(_this).closest(".action-buttons").attr("account");
-                if (!account) {
+                var catid = $(_this).closest(".action-buttons").attr("catid");
+                if (!catid) {
                   Somi.gritter('error', "参数不能空");
                   return false;
                 }
-                window.location.href = "/admin/update?account="+account+"&rand="+Math.random();
+                window.location.href = "/category/update?catid="+catid+"&rand="+Math.random();
+            });
+
+            //添加子分类
+            $("#table_category_list .action-buttons").on("click", ".addBtn", function(){
+                var _this = this;
+                var catid = $(_this).closest(".action-buttons").attr("catid");
+                var name = $(_this).closest(".action-buttons").attr("name");
+                var level = $(_this).closest(".action-buttons").attr("level");
+                if (!catid || !name || !level) {
+                  Somi.gritter('error', "参数不能空");
+                  return false;
+                }
+                window.location.href = "/category/add?fid="+catid+"&fname="+name+"&flevel="+level+"&rand="+Math.random();
             });
         }
     }

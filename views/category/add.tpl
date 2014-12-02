@@ -77,8 +77,8 @@
                     <button class="btn btn-sm btn-success" id="submit" type="button">
                       <i class="icon-ok bigger-110"></i> 确定 </button>
                     &nbsp; &nbsp; &nbsp;
-                      <button class="btn btn-sm" id="cancel" type="button">
-                        <i class="icon-undo bigger-110"></i> 取消 </button>
+                      <button class="btn btn-sm" id="callback" type="button">
+                        <i class="icon-undo bigger-110"></i> 返回 </button>
                   </div>
                 </div>
             </form>
@@ -93,7 +93,7 @@
 <script type="text/javascript">
 $(function() {
     //取消
-    $("#formBox").on("click", "#cancel", function(){
+    $("#formBox").on("click", "#callback", function(){
         location.href = "/category/list";
     });
 

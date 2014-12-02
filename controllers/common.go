@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/utils"
+	"gopkg.in/mgo.v2/bson"
 
 	"crypto/md5"
 	"encoding/hex"
@@ -137,7 +138,12 @@ func dateTableCondition(ctx *context.Context, fileds []string) (table M) {
 		}
 		isSearch := ctx.Input.Query("bSearchable_" + strconv.Itoa(k))
 		if "" != sSearch && "true" == isSearch {
-			sWhere = append(sWhere, M{v: regSearch})
+			//搜索_id的时候
+			if "_id" == v && bson.IsObjectIdHex(sSearch) {
+				sWhere = append(sWhere, M{"_id": bson.ObjectIdHex(sSearch)})
+			} else {
+				sWhere = append(sWhere, M{v: regSearch})
+			}
 		}
 
 		//排序

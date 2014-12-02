@@ -159,7 +159,7 @@
                 });
             });
 
-            //查看账号信息
+            //编辑账号
             $("#table_admin_list .action-buttons").on("click", ".updateBtn", function(){
                 var _this = this;
                 var account = $(_this).closest(".action-buttons").attr("account");

@@ -11,8 +11,6 @@ import (
 func CategoryList(table map[string]interface{}) (list []map[string]interface{}, count int, err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
 	sWhere, _ := table["sWhere"]
-	skip, _ := table["iDisplayStart"].(int)
-	limit, _ := table["iDisplayLength"].(int)
 	sort, _ := table["sSort"].(string)
 
 	where := M{}
@@ -28,7 +26,7 @@ func CategoryList(table map[string]interface{}) (list []map[string]interface{}, 
 		count = 0
 	}
 
-	err = connect.Find(where).Skip(skip).Limit(limit).Sort(sort).All(&list)
+	err = connect.Find(where).Sort(sort).All(&list)
 	if nil == list {
 		list = make([]map[string]interface{}, 0)
 	}
@@ -36,14 +34,14 @@ func CategoryList(table map[string]interface{}) (list []map[string]interface{}, 
 }
 
 //修改分类信息
-func UpdateCategory(catid, name, sort, nowTime string) (err error) {
+func UpdateCategory(_id, name, sort, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
-	if !bson.IsObjectIdHex(catid) {
+	if !bson.IsObjectIdHex(_id) {
 		err = errors.New("分类ID有误")
 		return err
 	}
 	set := M{"name": name, "sort": sort, "update_time": nowTime}
-	err = connect.Update(M{"_id": bson.ObjectIdHex(catid)}, M{"$set": set})
+	err = connect.Update(M{"_id": bson.ObjectIdHex(_id)}, M{"$set": set})
 	return err
 }
 
@@ -73,13 +71,13 @@ func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 }
 
 //获取分类信息
-func GetCategory(catid string) (info M, err error) {
+func GetCategory(_id string) (info M, err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
-	if !bson.IsObjectIdHex(catid) {
+	if !bson.IsObjectIdHex(_id) {
 		err = errors.New("分类ID有误")
 		return info, err
 	}
-	err = connect.Find(M{"_id": bson.ObjectIdHex(catid)}).One(&info)
+	err = connect.Find(M{"_id": bson.ObjectIdHex(_id)}).One(&info)
 	if nil != err && NOTFOUND == err.Error() {
 		err = nil
 		info = make(M)
@@ -91,12 +89,12 @@ func GetCategory(catid string) (info M, err error) {
 }
 
 //删除分类
-func DelCategory(catid string) (err error) {
+func DelCategory(_id string) (err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
-	if !bson.IsObjectIdHex(catid) {
+	if !bson.IsObjectIdHex(_id) {
 		err = errors.New("分类ID有误")
 		return err
 	}
-	err = connect.Remove(M{"_id": bson.ObjectIdHex(catid)})
+	err = connect.Remove(M{"_id": bson.ObjectIdHex(_id)})
 	return err
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"gopkg.in/mgo.v2/bson"
 
 	"admin/models"
 
@@ -26,6 +27,12 @@ func (this *CategoryController) List() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
+	//其他排序也必须按sort排序（如果有其他排序则为且的关系）
+	if "4" != this.GetString("iSortCol_0") {
+		this.Ctx.Input.Request.Form.Set("iSortCol_0", "4")
+		this.Ctx.Input.Request.Form.Set("sSortDir_0", "desc")
+	}
+
 	var err error
 	//连接mongodb
 	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
@@ -36,46 +43,33 @@ func (this *CategoryController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"account", "role", "email", "add_time", "update_time", "login_time", "lock", ""}
+	fileds := []string{"name", "_id", "fid", "level", "sort", "add_time", "update_time", ""}
 	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
-	list, count, err := models.AdminList(table)
+	list, count, err := models.CategoryList(table)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
-		seHtml := `<label>
-		                <input type="checkbox" class="ace" />
-		                <span class="lbl"></span>
-		            </label>`
-		statusHtmlStr := `<span class="label label-sm status %s">%s</span>`
-		opHtmlStr := `<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons" account="%s">
+		opHtmlStr := `<div class="action-buttons" catid="%s" name="%s" level="%s">
+			                <a class="green addBtn" title="添加子分类" href="javascript:void(0);">
+			                    <i class="icon-bookmark-empty bigger-130"></i>
+			                </a>
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
-			                </a>
-			                <a class="blue unLockBtn" title="%s" href="javascript:void(0);">
-			                    <i class="%s bigger-130"></i>
 			                </a>
 			                <a class="red delBtn" title="删除" href="javascript:void(0);">
 			                    <i class="icon-trash bigger-130"></i>
 			                </a>
 			            </div>`
 
-		for _, row := range list {
-			lock, _ := row["lock"]
-			status := "已激活"
-			title := "锁定"
-			statusClass := "label-success"
-			btnClass := "icon-unlock"
-			if "1" == lock {
-				status = "已锁定"
-				title = "解锁"
-				statusClass = "label-warning"
-				btnClass = "icon-lock"
-			}
-			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
-			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["account"], title, btnClass))
-			line := []interface{}{seHtml, row["account"], row["role"], row["email"], row["add_time"], row["update_time"], row["login_time"], statusHtml, opHtml}
+		//递归并处理列表
+		newlist := make([]map[string]interface{}, 0)
+		newlist = this.recursionList(list, newlist, "0", "0")
+
+		for _, row := range newlist {
+			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["_id"], row["name"], row["level"]))
+			line := []interface{}{row["name"], row["_id"], row["fid"], row["level"], row["sort"], row["add_time"], row["update_time"], opHtml}
 			rows = append(rows, line)
 		}
 	}
@@ -87,6 +81,34 @@ func (this *CategoryController) List() {
 	this.Data["json"] = result
 	this.ServeJson()
 	return
+}
+
+//递归并处理分类列表的展示结构
+func (this *CategoryController) recursionList(list, newlist []map[string]interface{}, f, n string) []map[string]interface{} {
+	intn, _ := strconv.Atoi(n)
+	n = strconv.Itoa(intn + 1)
+	prestr := "&nbsp;&nbsp;"
+	for _, row := range list {
+		level, _ := row["level"].(string)
+		fid, _ := row["fid"].(string)
+		if n == level && fid == f {
+			//分类ID的处理
+			cid, _ := row["_id"].(bson.ObjectId)
+			catId := cid.Hex()
+			row["_id"] = catId
+
+			//分类名称的处理
+			name, _ := row["name"].(string)
+			for i := 0; i < intn+1; i++ {
+				name = prestr + name
+			}
+			row["name"] = name
+
+			newlist = append(newlist, row)
+			newlist = this.recursionList(list, newlist, catId, level)
+		}
+	}
+	return newlist
 }
 
 //添加分类
