@@ -104,6 +104,8 @@ $(function() {
         var name = $("#name").val();
         var sort = $("#sort").val();
 
+        $('#errorMsg').text('请求中......');
+
         if ("" === fid) {
           $('#errorMsg').text('父分类ID有误');
           return false;
@@ -124,6 +126,8 @@ $(function() {
           return false;
         }
 
+        $('#submit').attr('disabled', 'disabled');
+
         var url = "/category/add"
         var data = {
           "fid": fid,
@@ -136,6 +140,7 @@ $(function() {
               $('#errorMsg').text(data.msg).css({"color":"#00cc66"});
             } else {
               $('#errorMsg').text(data.msg).css({"color":"#f00"});
+              $('#submit').removeAttr('disabled');
             }
         });
     });

@@ -36,7 +36,7 @@
                         <table id="table_admin_list" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th style="width:1%">
                                         <label>
                                             <input type="checkbox" class="ace" />
                                             <span class="lbl"></span>

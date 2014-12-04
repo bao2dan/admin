@@ -119,6 +119,8 @@ $(function() {
         var name = $("#name").val();
         var sort = $("#sort").val();
 
+        $('#errorMsg').text('请求中......');
+
         if ("" == catid) {
           $('#errorMsg').text('分类ID有误');
           return false;
@@ -134,6 +136,8 @@ $(function() {
           return false;
         }
 
+        $('#submit').attr('disabled', 'disabled');
+
         var url = "/category/update"
         var data = {
           "catid": catid,
@@ -145,6 +149,7 @@ $(function() {
               $('#errorMsg').text(data.msg).css({"color":"#00cc66"});
             } else {
               $('#errorMsg').text(data.msg).css({"color":"#f00"});
+              $('#submit').removeAttr('disabled');
             }
         });
     });

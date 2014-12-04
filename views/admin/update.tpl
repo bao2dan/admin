@@ -157,6 +157,8 @@ $(function() {
               role.push($(v).val());
         });
 
+        $('#errorMsg').text('请求中......');
+
         if ("" == account || !Somi.isEmail(account)) {
           $('#errorMsg').text('账号有误');
           return false;
@@ -182,6 +184,8 @@ $(function() {
           return false;
         }
 
+        $('#submit').attr('disabled', 'disabled');
+
         var url = "/admin/update"
         var data = {
           "account": account,
@@ -197,6 +201,7 @@ $(function() {
               $('#errorMsg').text(data.msg).css({"color":"#00cc66"});
             } else {
               $('#errorMsg').text(data.msg).css({"color":"#f00"});
+              $('#submit').removeAttr('disabled');
             }
         });
     });

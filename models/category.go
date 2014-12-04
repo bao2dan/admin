@@ -71,7 +71,7 @@ func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 }
 
 //获取分类信息
-func GetCategory(_id string) (info M, err error) {
+func GetCategory(_id string) (info map[string]interface{}, err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
 	if !bson.IsObjectIdHex(_id) {
 		err = errors.New("分类ID有误")
@@ -80,12 +80,22 @@ func GetCategory(_id string) (info M, err error) {
 	err = connect.Find(M{"_id": bson.ObjectIdHex(_id)}).One(&info)
 	if nil != err && NOTFOUND == err.Error() {
 		err = nil
-		info = make(M)
+		info = make(map[string]interface{})
 	} else {
 		cid, _ := info["_id"].(bson.ObjectId)
 		info["_id"] = cid.Hex()
 	}
 	return info, err
+}
+
+//获取某分类的子分类信息
+func GetSonCategory(fid string) (list []map[string]interface{}, err error) {
+	connect := MgoCon.DB(SOMI).C(CATEGORY)
+	err = connect.Find(M{"fid": fid}).All(&list)
+	if nil == list {
+		list = make([]map[string]interface{}, 0)
+	}
+	return list, err
 }
 
 //删除分类

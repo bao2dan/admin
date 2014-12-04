@@ -53,7 +53,7 @@ func (this *CategoryController) List() {
 	} else {
 		opHtmlStr := `<div class="action-buttons" catid="%s" name="%s" level="%s">
 			                <a class="green addBtn" title="添加子分类" href="javascript:void(0);">
-			                    <i class="icon-bookmark-empty bigger-130"></i>
+			                    <i class="icon-circle bigger-130"></i>
 			                </a>
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
@@ -99,7 +99,7 @@ func (this *CategoryController) recursionList(list, newlist []map[string]interfa
 
 			//分类名称的处理
 			name, _ := row["name"].(string)
-			for i := 0; i < intn+1; i++ {
+			for i := 0; i < intn; i++ {
 				name = prestr + name
 			}
 			row["name"] = name
@@ -310,6 +310,19 @@ func (this *CategoryController) Del() {
 		return
 	}
 	defer models.MgoCon.Close()
+
+	//获取此分类的子分类
+	list, err := models.GetSonCategory(catid)
+	if nil != err || len(list) > 0 {
+		if nil != err {
+			result["msg"] = err.Error()
+		} else {
+			result["msg"] = "存在子分类，不能直接删除"
+		}
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
 
 	err = models.DelCategory(catid)
 	if nil != err {

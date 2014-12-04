@@ -37,14 +37,14 @@
                         <table id="table_category_list" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>名称</th>
+                                    <th style="width:18%">名称</th>
                                     <th>分类ID</th>
                                     <th>父分类ID</th>
                                     <th>级数</th>
                                     <th>排序</th>
                                     <th>创建时间</th>
                                     <th>修改时间</th>
-                                    <th>操作</th>
+                                    <th style="width:10%">操作</th>
                                 </tr>
                             </thead>
 
@@ -69,7 +69,7 @@
             var config = DataTableConfig;
             config.sAjaxSource = "/category/list?rand=" + Math.random();
             config.aoColumns = [
-                    null,
+                    {"bSortable":false, "sClass":"left"},
                     {"bSortable":false},
                     {"bSortable":false},
                     {"bSortable":false},
@@ -85,6 +85,10 @@
                     Obj.bindOp(); //绑定操作事件
                 });
             }
+            config.iDisplayLength = 100; //每页默认显示100条(目的是不分页)
+            config.bLengthChange = false; //不显示选择每页显示多少条
+            config.bFilter = false; //不显示搜索框
+            config.bPaginate = false; //不显示分页器
             var oTable = $('#table_category_list').dataTable(config);
             Somi.dataTableSearchBind(oTable);
         },
@@ -133,6 +137,7 @@
                 var catid = $(_this).closest(".action-buttons").attr("catid");
                 var name = $(_this).closest(".action-buttons").attr("name");
                 var level = $(_this).closest(".action-buttons").attr("level");
+                name = $.trim(name);
                 if (!catid || !name || !level) {
                   Somi.gritter('error', "参数不能空");
                   return false;
