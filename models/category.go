@@ -48,11 +48,11 @@ func UpdateCategory(_id, name, sort, nowTime string) (err error) {
 //添加分类
 func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
-	if !bson.IsObjectIdHex(fid) {
-		err = errors.New("分类ID有误")
-		return err
-	}
 	if "0" != fid {
+		if !bson.IsObjectIdHex(fid) {
+			err = errors.New("分类ID有误")
+			return err
+		}
 		fcount, err := connect.Find(M{"_id": bson.ObjectIdHex(fid)}).Count()
 		if 0 == fcount {
 			err = errors.New("父分类ID不存在")

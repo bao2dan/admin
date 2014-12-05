@@ -49,7 +49,7 @@ func (this *AdminController) List() {
 		                <input type="checkbox" class="ace" />
 		                <span class="lbl"></span>
 		            </label>`
-		statusHtmlStr := `<span class="label status %s">%s</span>`
+		statusHtmlStr := `<span class="%s">%s</span>`
 		opHtmlStr := `<div class="action-buttons" account="%s" >
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
 			                    <i class="icon-pencil bigger-130"></i>
@@ -66,12 +66,12 @@ func (this *AdminController) List() {
 			lock, _ := row["lock"]
 			status := "已激活"
 			title := "锁定"
-			statusClass := "label-success"
+			statusClass := "green"
 			btnClass := "icon-unlock"
 			if "1" == lock {
 				status = "已锁定"
 				title = "解锁"
-				statusClass = "label-warning"
+				statusClass = "red"
 				btnClass = "icon-lock"
 			}
 			statusHtml := template.HTML(fmt.Sprintf(statusHtmlStr, statusClass, status))
