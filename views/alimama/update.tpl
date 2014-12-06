@@ -118,7 +118,7 @@ var treeJsonData = $.parseJSON('[[.CateTree]]');
 
 $(function() {
     //父分类选择初始化
-    var treeHtml = Somi.categoryTreeInit('#fCategory', treeJsonData, function(fid, fname, flevel){
+    var treeHtml = Somi.treeInitAndBind('#fCategory', treeJsonData, function(fid, fname, flevel){
         $("#fid").val(fid);
         $("#fCategory").val(fname);
         $("#flevel").val(flevel);

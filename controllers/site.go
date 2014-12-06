@@ -209,7 +209,7 @@ func (this *SiteController) Register() {
 
 	//判断是否已经存在该账号
 	info, err := models.GetAdmin(p["account"])
-	if nil != err {
+	if nil != err && err.Error() != models.NOTFOUND {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
 		this.ServeJson()

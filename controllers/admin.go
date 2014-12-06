@@ -138,16 +138,16 @@ func (this *AdminController) Update() {
 	}
 	defer models.MgoCon.Close()
 
-	if !this.IsAjax() {
-		//获取管理员信息
-		info, err := models.GetAdmin(account)
-		if nil != err {
-			result["msg"] = err.Error()
-			this.Data["json"] = result
-			this.ServeJson()
-			return
-		}
+	//获取管理员信息
+	info, err := models.GetAdmin(account)
+	if nil != err {
+		result["msg"] = err.Error()
+		this.Data["json"] = result
+		this.ServeJson()
+		return
+	}
 
+	if !this.IsAjax() {
 		//角色值转角色名称
 		roleHtmlStr := `<label>
 	                      <input name="role" value="%s" %s type="checkbox" class="ace ace-checkbox-2" />

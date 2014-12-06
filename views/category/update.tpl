@@ -26,26 +26,13 @@
 
 
             <form class="form-horizontal" id="formBox" role="form">
+                <!--下拉框-->
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类ID </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="fid"> 父分类名称 </label>
                   <div class="col-sm-9">
-                    <input type="text" value="[[.Info.fid]]"  placeholder="" class="col-xs-10 col-sm-5" readonly />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类名称 </label>
-                  <div class="col-sm-9">
-                    <input type="text" value="[[.Info.fname]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类级数 </label>
-                  <div class="col-sm-9">
-                    <input type="text" value="[[.Info.flevel]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
+                    <select class="col-xs-10 col-sm-5" id="fid" data-placeholder="请选择父分类">
+                    [[.CategoryHtml]]
+                    </select>
                   </div>
                 </div>
 
@@ -108,6 +95,14 @@
 
 <script type="text/javascript">
 $(function() {
+    //下拉框样式初始化
+    $("#formBox select").chosen()
+    .next('.chosen-container').each(function(){
+      $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
+      $(this).find('.chosen-drop').css({});
+      $(this).find('.chosen-search input').css({});
+    });
+
     //取消
     $("#formBox").on("click", "#callback", function(){
         location.href = "/category/list";
@@ -115,11 +110,17 @@ $(function() {
 
     //提交
     $("#formBox").on("click", "#submit", function(){
+        var fid = $("#fid").val();
         var catid = $("#catid").val();
         var name = $("#name").val();
         var sort = $("#sort").val();
 
         $('#errorMsg').text('请求中......');
+
+        if ("" == fid) {
+          $('#errorMsg').text('请选择父分类');
+          return false;
+        }
 
         if ("" == catid) {
           $('#errorMsg').text('分类ID有误');
@@ -140,6 +141,7 @@ $(function() {
 
         var url = "/category/update"
         var data = {
+          "fid": fid,
           "catid": catid,
           "name": name,
           "sort": sort

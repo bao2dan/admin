@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"gopkg.in/mgo.v2/bson"
 
 	"admin/models"
 
@@ -10,15 +11,15 @@ import (
 	"strconv"
 )
 
-type CategoryController struct {
+type AlimamaController struct {
 	beego.Controller
 }
 
-//分类列表
-func (this *CategoryController) List() {
+//阿里妈妈列表
+func (this *AlimamaController) List() {
 	if !this.IsAjax() {
 		this.Layout = "layout.html"
-		this.TplNames = "category/list.tpl"
+		this.TplNames = "alimama/list.tpl"
 		this.Render()
 		return
 	}
@@ -42,13 +43,16 @@ func (this *CategoryController) List() {
 	}
 	defer models.MgoCon.Close()
 
+	fileds := []string{"name", "_id", "fid", "level", "sort", "add_time", "update_time", ""}
+	table := dateTableCondition(this.Ctx, fileds)
+
 	rows := []interface{}{}
-	list, count, err := models.CategoryList()
+	list, count, err := models.AlimamaList(table)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {
 		opHtmlStr := `<div class="action-buttons" catid="%s" name="%s" level="%s">
-			                <a class="green addBtn" title="添加子分类" href="javascript:void(0);">
+			                <a class="green addBtn" title="添加子阿里妈妈" href="javascript:void(0);">
 			                    <i class="icon-circle bigger-130"></i>
 			                </a>
 			                <a class="green updateBtn" title="编辑" href="javascript:void(0);">
@@ -61,7 +65,7 @@ func (this *CategoryController) List() {
 
 		//递归并处理列表
 		newlist := make([]map[string]interface{}, 0)
-		newlist = models.CategoryRecursionList(list, newlist, "0", "&nbsp;&nbsp;", 0)
+		newlist = this.recursionList(list, newlist, "0", "0")
 
 		for _, row := range newlist {
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["_id"], row["name"], row["level"]))
@@ -79,9 +83,37 @@ func (this *CategoryController) List() {
 	return
 }
 
-//添加分类
-func (this *CategoryController) Add() {
-	//父分类ID
+//递归并处理阿里妈妈列表的展示结构
+func (this *AlimamaController) recursionList(list, newlist []map[string]interface{}, f, n string) []map[string]interface{} {
+	intn, _ := strconv.Atoi(n)
+	n = strconv.Itoa(intn + 1)
+	prestr := "&nbsp;&nbsp;"
+	for _, row := range list {
+		level, _ := row["level"].(string)
+		fid, _ := row["fid"].(string)
+		if n == level && fid == f {
+			//阿里妈妈ID的处理
+			cid, _ := row["_id"].(bson.ObjectId)
+			catId := cid.Hex()
+			row["_id"] = catId
+
+			//阿里妈妈名称的处理
+			name, _ := row["name"].(string)
+			for i := 0; i < intn; i++ {
+				name = prestr + name
+			}
+			row["name"] = name
+
+			newlist = append(newlist, row)
+			newlist = this.recursionList(list, newlist, catId, level)
+		}
+	}
+	return newlist
+}
+
+//添加阿里妈妈
+func (this *AlimamaController) Add() {
+	//父阿里妈妈ID
 	fid := this.GetString("fid")
 	fname := this.GetString("fname")
 	flevel := this.GetString("flevel")
@@ -105,7 +137,7 @@ func (this *CategoryController) Add() {
 		this.Data["Fname"] = fname
 		this.Data["Flevel"] = flevel
 		this.Layout = "layout.html"
-		this.TplNames = "category/add.tpl"
+		this.TplNames = "alimama/add.tpl"
 		this.Render()
 		return
 	}
@@ -119,7 +151,7 @@ func (this *CategoryController) Add() {
 
 	hasErr := false
 	if "" == fid {
-		result["msg"] = "父分类ID有误"
+		result["msg"] = "父阿里妈妈ID有误"
 		hasErr = true
 	}
 	if "" == name {
@@ -146,8 +178,8 @@ func (this *CategoryController) Add() {
 	}
 	defer models.MgoCon.Close()
 
-	//添加分类
-	err = models.AddCategory(fid, level, name, sort, nowTime)
+	//添加阿里妈妈
+	err = models.AddAlimama(fid, level, name, sort, nowTime)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -162,16 +194,15 @@ func (this *CategoryController) Add() {
 	return
 }
 
-//编辑分类
-func (this *CategoryController) Update() {
+//编辑阿里妈妈
+func (this *AlimamaController) Update() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
-	//参数，非AJAX修改，只传一个catid
-	fid := this.GetString("fid")
+	//阿里妈妈ID
 	catid := this.GetString("catid")
 	if "" == catid {
-		result["msg"] = "分类ID有误"
+		result["msg"] = "阿里妈妈ID有误"
 		this.Data["json"] = result
 		this.ServeJson()
 		return
@@ -187,40 +218,9 @@ func (this *CategoryController) Update() {
 	}
 	defer models.MgoCon.Close()
 
-	//获取分类信息
-	info, err := models.GetCategory(catid)
-	if nil != err {
-		result["msg"] = err.Error()
-		this.Data["json"] = result
-		this.ServeJson()
-		return
-	}
-
-	//若非AJAX修改，则从库里取父分类ID
-	if "" == fid {
-		fid, _ = info["fid"].(string)
-	}
-
-	//一级分类不需要查找父分类信息(页面展示调用时，一级分类的父ID为空)
-	flevel := "0"
-	if "" != fid && "0" != fid {
-		finfo, err := models.GetCategory(fid)
-		if nil != err {
-			result["msg"] = err.Error()
-			this.Data["json"] = result
-			this.ServeJson()
-			return
-		}
-		flevel, _ = finfo["level"].(string)
-		info["fname"] = finfo["name"]
-		info["flevel"] = flevel
-	} else {
-		info["fname"] = "无"
-		info["flevel"] = "0"
-	}
-
 	if !this.IsAjax() {
-		list, _, err := models.CategoryList()
+		//获取阿里妈妈信息
+		info, err := models.GetAlimama(catid)
 		if nil != err {
 			result["msg"] = err.Error()
 			this.Data["json"] = result
@@ -228,27 +228,27 @@ func (this *CategoryController) Update() {
 			return
 		}
 
-		//获取分类选择列表
-		catHtmlStr := `<option %s value='%s'>%s</option>`
-
-		//递归并处理列表
-		newlist := make([]map[string]interface{}, 0)
-		newlist = models.CategoryRecursionList(list, newlist, "0", "&nbsp;&nbsp;", 0)
-
-		catHtml := "<option value=''>请选择父分类</option>"
-		for _, row := range newlist {
-			rowcatid, _ := row["_id"].(string)
-			selected := ""
-			if rowcatid == fid {
-				selected = " selected='selected' "
+		//获取父阿里妈妈信息
+		fid, _ := info["fid"].(string)
+		//一级阿里妈妈不需要查找父阿里妈妈信息
+		if "" != fid && "0" != fid {
+			finfo, err := models.GetAlimama(fid)
+			if nil != err {
+				result["msg"] = err.Error()
+				this.Data["json"] = result
+				this.ServeJson()
+				return
 			}
-			catHtml += fmt.Sprintf(catHtmlStr, selected, rowcatid, row["name"])
+			info["fname"] = finfo["name"]
+			info["flevel"] = finfo["level"]
+		} else {
+			info["fname"] = "无"
+			info["flevel"] = "0"
 		}
 
-		this.Data["CategoryHtml"] = template.HTML(catHtml)
 		this.Data["Info"] = info
 		this.Layout = "layout.html"
-		this.TplNames = "category/update.tpl"
+		this.TplNames = "alimama/update.tpl"
 		this.Render()
 		return
 	}
@@ -256,15 +256,8 @@ func (this *CategoryController) Update() {
 	//获取参数并校验
 	name := this.GetString("name")
 	sort := this.GetString("sort")
+
 	hasErr := false
-	if "" == fid {
-		result["msg"] = "父分类ID有误"
-		hasErr = true
-	}
-	if "" == flevel {
-		result["msg"] = "父分类级数有误"
-		hasErr = true
-	}
 	if "" == name {
 		result["msg"] = "名称有误"
 		hasErr = true
@@ -279,11 +272,8 @@ func (this *CategoryController) Update() {
 		return
 	}
 
-	intflevel, _ := strconv.Atoi(flevel)
-	level := strconv.Itoa(intflevel + 1)
-
-	//添加分类
-	err = models.UpdateCategory(catid, fid, level, name, sort, nowTime)
+	//添加阿里妈妈
+	err = models.UpdateAlimama(catid, name, sort, nowTime)
 	if nil != err {
 		result["msg"] = err.Error()
 		this.Data["json"] = result
@@ -298,8 +288,8 @@ func (this *CategoryController) Update() {
 	return
 }
 
-//删除分类
-func (this *CategoryController) Del() {
+//删除阿里妈妈
+func (this *AlimamaController) Del() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
@@ -321,20 +311,7 @@ func (this *CategoryController) Del() {
 	}
 	defer models.MgoCon.Close()
 
-	//获取此分类的子分类
-	list, err := models.GetSonCategory(catid)
-	if nil != err || len(list) > 0 {
-		if nil != err {
-			result["msg"] = err.Error()
-		} else {
-			result["msg"] = "存在子分类，不能直接删除"
-		}
-		this.Data["json"] = result
-		this.ServeJson()
-		return
-	}
-
-	err = models.DelCategory(catid)
+	err = models.DelAlimama(catid)
 	if nil != err {
 		result["msg"] = err.Error()
 	} else {

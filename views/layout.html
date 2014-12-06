@@ -323,6 +323,56 @@ var Somi = {
         }
     },
 
+    //分类树的初始化[单选]
+    //idName 要点击元素的id名称
+    //treeJsonData json数据
+    //selectedFun 选中后要执行的方法
+    categoryTreeInit: function(idName, treeJsonData, selectedFun){
+        //选择父分类
+        $('#formBox').on('click', idName, function(){
+            //分类树初始化
+            var treeDataSource = new DataSourceTree({data: treeJsonData});
+            var treeHtml = $("<div>").attr({"id":"treeCategory", "class":"tree"}).css({"width":"100%", "height":"400px", "overflow":"auto"});
+
+            $(treeHtml).ace_tree({
+                'dataSource': treeDataSource,
+                'multiSelect': false,
+                'loadingHTML': '<div class="tree-loading"><i class="icon-refresh icon-spin blue"></i></div>',
+                'open-icon': 'icon-minus',
+                'close-icon': 'icon-plus',
+                'selectable': true,
+                'selected-icon': 'icon-ok',
+                'unselected-icon': 'icon-remove'
+            });
+
+            //选择分类的时候
+            $(treeHtml).on('selected', function (evt, data) {
+                var fid = typeof(data.info[0].catid) != 'undefined' ? data.info[0].catid : '';
+                var fname = typeof(data.info[0].name) != 'undefined' ? data.info[0].name : '';
+                var flevel = typeof(data.info[0].level) != 'undefined' ? data.info[0].level : '';
+                if ("" == fid || "" == fname || "" == flevel) {
+                    Somi.gritter('error', "选择父分类失败，请刷新页面重新选择");
+                }
+
+                selectedFun(fid, fname, flevel);
+
+                //关闭弹窗
+                bootbox.hideAll();
+            });
+
+            //弹窗
+            bootbox.dialog({
+                message: treeHtml,
+                buttons: {
+                  "button": {
+                    "label" : "取消",
+                    "className" : "btn-sm"
+                  }
+                }
+            });
+        });
+    },
+
     //邮箱检查
     isEmail: function(email){
         var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/

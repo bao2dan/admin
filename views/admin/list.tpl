@@ -114,7 +114,7 @@
                     url = "/admin/unlock"
                 }
 
-                bootbox.confirm("您确定要操作吗?", function(result) {
+                bootbox.confirm('您确定要操作管理员“<font color="red">'+account+'</font>”吗?', function(result) {
                     if(result) {
                         var data = {"account":account};
                         Somi.ajax(url, data, function(data){
@@ -144,7 +144,7 @@
                 }
                 var url = "/admin/del"
 
-                bootbox.confirm("您确定要删除吗?", function(result) {
+                bootbox.confirm('您确定要删除管理员“<font color="red">'+account+'</font>”吗?', function(result) {
                     if(result) {
                         var data = {"account":account};
                         Somi.ajax(url, data, function(data){

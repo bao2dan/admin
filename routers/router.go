@@ -30,4 +30,10 @@ func init() {
 	beego.Router("/category/add", &controllers.CategoryController{}, "*:Add")
 	beego.Router("/category/update", &controllers.CategoryController{}, "*:Update")
 	beego.Router("/category/del", &controllers.CategoryController{}, "post:Del")
+
+	//alimama
+	beego.Router("/alimama/list", &controllers.AlimamaController{}, "*:List")
+	beego.Router("/alimama/add", &controllers.AlimamaController{}, "*:Add")
+	beego.Router("/alimama/update", &controllers.AlimamaController{}, "*:Update")
+	beego.Router("/alimama/del", &controllers.AlimamaController{}, "post:Del")
 }

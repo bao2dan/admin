@@ -106,7 +106,7 @@
                 }
                 var url = "/category/del"
 
-                bootbox.confirm('您确定要删除分类“<font color="red">'+name+'</font>”吗?', function(result) {
+                bootbox.confirm('您确定要删除商品“<font color="red">'+name+'</font>”吗?', function(result) {
                     if(result) {
                         var data = {"catid":catid};
                         Somi.ajax(url, data, function(data){

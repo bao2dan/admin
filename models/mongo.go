@@ -19,6 +19,7 @@ const (
 	SOMI              = "somi"
 	ADMIN_USER        = "admin.user"
 	CATEGORY          = "category"
+	ALIMAMA           = "alimama"
 )
 
 var (

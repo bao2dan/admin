@@ -73,9 +73,5 @@ func GetAdmin(account string) (info map[string]string, err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
 	where := M{"account": account}
 	err = connect.Find(where).One(&info)
-	if nil != err && NOTFOUND == err.Error() {
-		err = nil
-		info = make(map[string]string)
-	}
 	return info, err
 }
