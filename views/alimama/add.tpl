@@ -81,17 +81,17 @@
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 商品链接 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品图片 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="url" value="" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="img" value="" placeholder="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 商品图片 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品链接 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="img" value="" placeholder="" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="url" value="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
