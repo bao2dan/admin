@@ -48,7 +48,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label no-padding-right"> 添加时间 </label>
                   <div class="col-sm-9">
-                    <input type="text" value="[[.Info.add_time]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" value="[[.Info.addTime]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
                   </div>
                 </div>
 
@@ -114,14 +114,12 @@ $(function() {
         var catid = $("#catid").val();
         var name = $("#name").val();
         var sort = $("#sort").val();
-
-        $('#errorMsg').text('请求中......');
-
         if ("" == fid) {
-          $('#errorMsg').text('请选择父分类');
-          return false;
+          fid = "0";
         }
 
+        $('#errorMsg').text('请求中......');
+        
         if ("" == catid) {
           $('#errorMsg').text('分类ID有误');
           return false;

@@ -84,17 +84,17 @@
 
               <div class="space-4"></div>
               <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="phone"> 注册时间 </label>
                 <div class="col-sm-9">
-                  <span>[[.Info.add_time]]</span>
+                  <span>[[.Info.addTime]]</span>
                 </div>
               </div>
 
               <div class="space-4"></div>
               <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="phone"> 登陆 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="phone"> 最后登陆时间 </label>
                 <div class="col-sm-9">
-                  <span>[[.Info.login_time]]</span>
+                  <span>[[.Info.loginTime]]</span>
                 </div>
               </div>
           </form>

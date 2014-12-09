@@ -26,12 +26,6 @@ func (this *CategoryController) List() {
 	//result map
 	result := map[string]interface{}{"succ": 0, "msg": ""}
 
-	//其他排序也必须按sort排序（如果有其他排序则为且的关系）
-	if "4" != this.GetString("iSortCol_0") {
-		this.Ctx.Input.Request.Form.Set("iSortCol_0", "4")
-		this.Ctx.Input.Request.Form.Set("sSortDir_0", "desc")
-	}
-
 	var err error
 	//连接mongodb
 	models.MgoCon, err = models.ConnectMgo(MGO_CONF)
@@ -59,13 +53,9 @@ func (this *CategoryController) List() {
 			                </a>
 			            </div>`
 
-		//递归并处理列表
-		newlist := make([]map[string]interface{}, 0)
-		newlist = models.CategoryRecursionList(list, newlist, "0", "&nbsp;&nbsp;", 0)
-
-		for _, row := range newlist {
+		for _, row := range list {
 			opHtml := template.HTML(fmt.Sprintf(opHtmlStr, row["_id"], row["name"], row["level"]))
-			line := []interface{}{row["name"], row["_id"], row["fid"], row["level"], row["sort"], row["add_time"], row["update_time"], opHtml}
+			line := []interface{}{row["name"], row["_id"], row["fid"], row["level"], row["sort"], row["addTime"], row["updateTime"], opHtml}
 			rows = append(rows, line)
 		}
 	}
@@ -231,12 +221,8 @@ func (this *CategoryController) Update() {
 		//获取分类选择列表
 		catHtmlStr := `<option %s value='%s'>%s</option>`
 
-		//递归并处理列表
-		newlist := make([]map[string]interface{}, 0)
-		newlist = models.CategoryRecursionList(list, newlist, "0", "&nbsp;&nbsp;", 0)
-
-		catHtml := "<option value=''>请选择父分类</option>"
-		for _, row := range newlist {
+		catHtml := "<option value=''>顶级分类(无)</option>"
+		for _, row := range list {
 			rowcatid, _ := row["_id"].(string)
 			selected := ""
 			if rowcatid == fid {

@@ -46,7 +46,6 @@
                                     <th>角色</th>
                                     <th>姓名</th>
                                     <th>手机号</th>
-                                    <th>创建时间</th>
                                     <th>登陆时间</th>
                                     <th>状态</th>
                                     <th>操作</th>
@@ -79,7 +78,6 @@
                     null,
                     {"bSortable":false},
                     {"bSortable":false},
-                    {"bSearchable":false},
                     {"bSearchable":false},
                     {"bSearchable":false},
                     {"bSortable":false, "bSearchable":false}

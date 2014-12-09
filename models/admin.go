@@ -36,7 +36,7 @@ func AdminList(table map[string]interface{}) (list []map[string]interface{}, cou
 //修改管理员信息
 func UpdateAdmin(account, passwd, name, phone, email, sex, role, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	set := M{"name": name, "phone": phone, "email": email, "sex": sex, "update_time": nowTime}
+	set := M{"name": name, "phone": phone, "email": email, "sex": sex, "updateTime": nowTime}
 	if "" != passwd {
 		set["passwd"] = passwd
 	}
@@ -50,14 +50,14 @@ func UpdateAdmin(account, passwd, name, phone, email, sex, role, nowTime string)
 //解锁(激活)管理员账号
 func UnlockAdmin(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Update(M{"account": account, "lock": "1"}, M{"$set": M{"lock": "0", "update_time": nowTime}})
+	err = connect.Update(M{"account": account, "lock": "1"}, M{"$set": M{"lock": "0", "updateTime": nowTime}})
 	return err
 }
 
 //锁定管理员账号
 func LockAdmin(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Update(M{"account": account, "lock": "0"}, M{"$set": M{"lock": "1", "update_time": nowTime}})
+	err = connect.Update(M{"account": account, "lock": "0"}, M{"$set": M{"lock": "1", "updateTime": nowTime}})
 	return err
 }
 

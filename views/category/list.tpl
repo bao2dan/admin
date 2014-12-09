@@ -38,10 +38,10 @@
                             <thead>
                                 <tr>
                                     <th style="width:16%">名称</th>
-                                    <th style="width:16%">分类ID</th>
-                                    <th style="width:16%">父分类ID</th>
+                                    <th style="width:17%">分类ID</th>
+                                    <th style="width:17%">父分类ID</th>
                                     <th style="width:6%">级数</th>
-                                    <th style="width:8%">排序</th>
+                                    <th style="width:6%">排序</th>
                                     <th style="width:14%">创建时间</th>
                                     <th style="width:14%">修改时间</th>
                                     <th style="width:10%">操作</th>
@@ -69,14 +69,14 @@
             var config = DataTableConfig;
             config.sAjaxSource = "/category/list?rand=" + Math.random();
             config.aoColumns = [
-                    {"bSortable":false, "sClass":"left"},
-                    {"bSortable":false},
-                    {"bSortable":false},
-                    {"bSortable":false},
-                    {"bSearchable":false},
-                    {"bSearchable":false},
-                    {"bSearchable":false},
-                    {"bSortable":false, "bSearchable":false},
+                    {"bSearchable":false, "bSortable":false, "sClass":"left"},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
+                    {"bSearchable":false, "bSortable":false},
                 ];
             config.fnServerData = function(sSource, aoData, fnCallback){
                 aoData.push( {} );

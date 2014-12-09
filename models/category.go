@@ -15,7 +15,7 @@ func CategoryTreeData(catid string) (list []map[string]interface{}, err error) {
 	}
 
 	newlist := make([]map[string]interface{}, 0)
-	newlist = CategoryRecursionTree(list, catid, "0", 0)
+	newlist = categoryRecursionTree(list, catid, "0", 0)
 	return newlist, err
 }
 
@@ -25,7 +25,7 @@ func CategoryTreeData(catid string) (list []map[string]interface{}, err error) {
 //@param catid 要选中的分类ID(如果不需要选中则置空)
 //@param f 父分类ID
 //@param n 上一级分类的级数
-func CategoryRecursionTree(list []map[string]interface{}, catid, f string, n int) []map[string]interface{} {
+func categoryRecursionTree(list []map[string]interface{}, catid, f string, n int) []map[string]interface{} {
 	n = n + 1
 	sonList := make([]map[string]interface{}, 0)
 	for _, row := range list {
@@ -45,7 +45,7 @@ func CategoryRecursionTree(list []map[string]interface{}, catid, f string, n int
 			ele["name"] = name
 
 			//递归
-			resList := CategoryRecursionTree(list, catid, rowcatid, n)
+			resList := categoryRecursionTree(list, catid, rowcatid, n)
 
 			addParam := make(map[string]interface{})
 			if len(resList) > 0 {
@@ -67,7 +67,7 @@ func CategoryRecursionTree(list []map[string]interface{}, catid, f string, n int
 }
 
 //获取分类列表
-func CategoryList() (list []map[string]interface{}, count int, err error) {
+func CategoryList() (newlist []map[string]interface{}, count int, err error) {
 	connect := MgoCon.DB(SOMI).C(CATEGORY)
 
 	where := M{}
@@ -76,11 +76,14 @@ func CategoryList() (list []map[string]interface{}, count int, err error) {
 		count = 0
 	}
 
+	list := make([]map[string]interface{}, 0)
 	err = connect.Find(where).Sort("-sort").All(&list)
 	if nil == list {
 		list = make([]map[string]interface{}, 0)
 	}
-	return list, count, err
+
+	newlist = categoryRecursionList(list, newlist, "0", "&nbsp;&nbsp;", 0)
+	return newlist, count, err
 }
 
 //递归并处理分类列表的展示结构数据
@@ -89,7 +92,7 @@ func CategoryList() (list []map[string]interface{}, count int, err error) {
 //@param f 父分类ID
 //@param prestr 根据级数，要在分类名称前要加的字符串
 //@param n 上一级分类的级数
-func CategoryRecursionList(list, newlist []map[string]interface{}, f, prestr string, n int) []map[string]interface{} {
+func categoryRecursionList(list, newlist []map[string]interface{}, f, prestr string, n int) []map[string]interface{} {
 	n = n + 1
 	for _, row := range list {
 		fid, _ := row["fid"].(string)
@@ -108,7 +111,7 @@ func CategoryRecursionList(list, newlist []map[string]interface{}, f, prestr str
 			newlist = append(newlist, row)
 
 			//递归
-			newlist = CategoryRecursionList(list, newlist, catId, prestr, n)
+			newlist = categoryRecursionList(list, newlist, catId, prestr, n)
 		}
 	}
 	return newlist
@@ -121,7 +124,7 @@ func UpdateCategory(catid, fid, level, name, sort, nowTime string) (err error) {
 		err = errors.New("分类ID有误")
 		return err
 	}
-	set := M{"fid": fid, "level": level, "name": name, "sort": sort, "update_time": nowTime}
+	set := M{"fid": fid, "level": level, "name": name, "sort": sort, "updateTime": nowTime}
 	err = connect.Update(M{"_id": bson.ObjectIdHex(catid)}, M{"$set": set})
 	return err
 }
@@ -147,7 +150,7 @@ func AddCategory(fid, level, name, sort, nowTime string) (err error) {
 		return err
 	}
 
-	err = connect.Insert(M{"name": name, "fid": fid, "level": level, "sort": sort, "add_time": nowTime, "update_time": nowTime})
+	err = connect.Insert(M{"name": name, "fid": fid, "level": level, "sort": sort, "addTime": nowTime, "updateTime": nowTime})
 	return err
 }
 

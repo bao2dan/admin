@@ -33,14 +33,14 @@ func GetNotActivateAdmin(account string) (info map[string]string, err error) {
 //新增账号信息
 func AddAdminInfo(account, passwd, token, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Insert(M{"account": account, "lock": "1", "token": token, "passwd": passwd, "role": "guest", "name": "", "phone": "", "email": account, "sex": "0", "login_time": nowTime, "update_time": nowTime, "add_time": nowTime})
+	err = connect.Insert(M{"account": account, "lock": "1", "token": token, "passwd": passwd, "role": "guest", "name": "", "phone": "", "email": account, "sex": "0", "loginTime": nowTime, "updateTime": nowTime, "addTime": nowTime})
 	return err
 }
 
 //设置账号最后一次登陆时间
 func SetAdminLoginTime(account, nowTime string) (err error) {
 	connect := MgoCon.DB(SOMI).C(ADMIN_USER)
-	err = connect.Update(M{"account": account}, M{"$set": M{"login_time": nowTime}})
+	err = connect.Update(M{"account": account}, M{"$set": M{"loginTime": nowTime}})
 	return err
 }
 

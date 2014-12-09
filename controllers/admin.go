@@ -37,7 +37,7 @@ func (this *AdminController) List() {
 	}
 	defer models.MgoCon.Close()
 
-	fileds := []string{"", "account", "role", "name", "phone", "email", "add_time", "update_time", "login_time", "lock", ""}
+	fileds := []string{"", "account", "role", "name", "phone", "email", "updateTime", "loginTime", "lock", ""}
 	table := dateTableCondition(this.Ctx, fileds)
 
 	rows := []interface{}{}
@@ -89,7 +89,7 @@ func (this *AdminController) List() {
 				}
 			}
 
-			line := []interface{}{seHtml, row["account"], strings.Join(rnames, ","), row["name"], row["phone"], row["add_time"], row["login_time"], statusHtml, opHtml}
+			line := []interface{}{seHtml, row["account"], strings.Join(rnames, ","), row["name"], row["phone"], row["loginTime"], statusHtml, opHtml}
 			rows = append(rows, line)
 		}
 	}

@@ -27,7 +27,7 @@
 
             <form class="form-horizontal" id="formBox" role="form">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="account"> 账号 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 账号 </label>
                   <div class="col-sm-9">
                     <input type="text" id="account" value="[[.Info.account]]" placeholder="这里显示的是账号" class="col-xs-10 col-sm-5" readonly />
                   </div>
@@ -35,7 +35,7 @@
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="passwd"> 密码 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 密码 </label>
                   <div class="col-sm-9">
                     <input type="password" id="passwd" value="" placeholder="若不修改，则必须为空" class="col-xs-10 col-sm-5" />
                   </div>
@@ -43,7 +43,7 @@
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 姓名 </label>
                   <div class="col-sm-9">
                     <input type="text" id="name" value="[[.Info.name]]" placeholder="请输入姓名" class="col-xs-10 col-sm-5" />
                   </div>
@@ -51,7 +51,7 @@
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="phone"> 手机 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 手机 </label>
                   <div class="col-sm-9">
                     <input type="text" id="phone" value="[[.Info.phone]]" placeholder="请输入手机号码" class="col-xs-10 col-sm-5" />
                   </div>
@@ -59,7 +59,7 @@
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="email"> 邮箱 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 邮箱 </label>
                   <div class="col-sm-9">
                     <input type="text" id="email" value="[[.Info.email]]" placeholder="请输入邮箱" class="col-xs-10 col-sm-5" />
                   </div>
@@ -90,9 +90,25 @@
                 </div>
                 [[end]]
 
+                <div class="space-4"></div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 注册时间 </label>
+                  <div class="col-sm-9">
+                    <span>[[.Info.addTime]]</span>
+                  </div>
+                </div>
+
+                <div class="space-4"></div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 最后登陆时间 </label>
+                  <div class="col-sm-9">
+                    <span>[[.Info.loginTime]]</span>
+                  </div>
+                </div>
+
                 <!--下拉框-->
                 <div class="form-group" style="display:none;">
-                  <label class="col-sm-3 control-label no-padding-right" for="role_bak"> 权限 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 权限 </label>
                   <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="role_bak" data-placeholder="请选择权限">
                       <option value="guest">游客</option>

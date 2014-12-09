@@ -27,64 +27,71 @@
 
             <form class="form-horizontal" id="formBox" role="form">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类名称 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 选择分类 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="fCategory" value="[[.Info.fname]]" title="点击此处可选择父分类" placeholder="点击此处可选择父分类" class="col-xs-10 col-sm-5" style="background-color:#00cc66; cursor:pointer;" />
+                    <input type="text" id="fCategory" value="" title="点击选择分类" placeholder="点击选择分类" class="col-xs-10 col-sm-5" style="background-color:ghostwhite; cursor:pointer;" />
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类ID </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品名称 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="fid" value="[[.Info.fid]]"  placeholder="" class="col-xs-10 col-sm-5" readonly />
-                  </div>
-                </div>
-
-                <div class="space-4"></div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 父分类级数 </label>
-                  <div class="col-sm-9">
-                    <input type="text" id="flevel" value="[[.Info.flevel]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="name" value=""  placeholder="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="catid"> 分类ID </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品原价 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="catid" value="[[.Info._id]]" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="old_price" value="" placeholder="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 添加时间 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品现价 </label>
                   <div class="col-sm-9">
-                    <input type="text" value="[[.Info.add_time]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="price" value="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 分类级数 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品排序 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="level" value="[[.Info.level]]" placeholder="" class="col-xs-10 col-sm-5" readonly />
+                    <input type="text" id="sort" value="" class="col-xs-10 col-sm-5" />
+                  </div>
+                </div>
+
+                <!--下拉框-->
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 商品状态 </label>
+                  <div class="col-sm-9">
+                    <label>
+                        <input name="status" value="1" type="radio" class="ace" checked />
+                        <span class="lbl">下线</span>
+                      </label>
+                      <label>
+                        <input name="status" value="0" type="radio" class="ace" />
+                        <span class="lbl">上线</span>
+                      </label>
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="name"> 分类名称 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品链接 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="name" value="[[.Info.name]]" placeholder="分类名称" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="url" value="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
                 <div class="space-4"></div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="sort"> 分类排序 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 商品图片 </label>
                   <div class="col-sm-9">
-                    <input type="text" id="sort" value="[[.Info.sort]]" title="数字(正序)" placeholder="请输入数字(正序)" class="col-xs-10 col-sm-5" />
+                    <input type="text" id="img" value="" placeholder="" class="col-xs-10 col-sm-5" />
                   </div>
                 </div>
 
@@ -114,9 +121,17 @@
 
 
 <script type="text/javascript">
-var treeJsonData = $.parseJSON('[[.CateTree]]');
+var treeJsonData = $.parseJSON('[[.CategoryTree]]');
 
 $(function() {
+    //下拉框样式初始化
+    $("#formBox select").chosen()
+    .next('.chosen-container').each(function(){
+      $(this).addClass("col-xs-10 col-sm-5").css({}).css({"padding":"0px"});
+      $(this).find('.chosen-drop').css({});
+      $(this).find('.chosen-search input').css({});
+    });
+
     //父分类选择初始化
     var treeHtml = Somi.categoryTreeInit('#fCategory', treeJsonData, function(fid, fname, flevel){
         $("#fid").val(fid);
